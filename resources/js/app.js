@@ -1,0 +1,1 @@
+import.meta.glob(['../images/**', '../../public/images/**'], { eager: true });
