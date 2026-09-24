@@ -5,13 +5,13 @@
 @section('meta_description', $project->description)
 
 @php
-    $settings = App\Models\Setting::getMany(['site_title', 'site_tagline', 'site_description', 'meta_keywords']);
+    $settings = App\Models\Setting::getMany(['site_title', 'site_tagline', 'site_description', 'meta_keywords', 'signature_image', 'favicon']);
 @endphp
 
 @section('content')
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-20">
-        <nav class="mb-8 text-sm text-slate-500">
+        <nav class="mb-8 text-sm text-slate-500" data-reveal>
             <a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a>
             <span class="mx-2">/</span>
             <a href="{{ route('projects.index') }}" class="hover:text-white transition-colors">Projects</a>
@@ -19,7 +19,7 @@
             <span class="text-slate-300">{{ $project->title }}</span>
         </nav>
 
-        <div class="mb-10">
+        <div class="mb-10" data-reveal="up">
             <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight">{{ $project->title }}</h1>
             <div class="flex flex-wrap items-center gap-3 mt-4">
                 @if ($project->technologies)
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10" data-stagger>
             <div class="lg:col-span-2">
                 <div class="rounded-2xl overflow-hidden border border-white/10 mb-8">
                     @if ($project->image)
@@ -113,7 +113,7 @@
             align="left"
         />
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-stagger>
             @foreach ($relatedProjects as $related)
                 <x-frontend.project-card :project="$related" />
             @endforeach

@@ -29,17 +29,24 @@ foreach ($attributes->all() as $__key => $__value) {
 unset($__defined_vars, $__key, $__value); ?>
 
 <?php
-    $heroWords = $settings['hero_words'] ?? ['Web Applications', 'Modern Websites', 'APIs & Systems', 'Mobile Solutions'];
+    $defaultWords = ['Web Applications', 'Modern Websites', 'APIs & Systems', 'Mobile Solutions'];
+    $heroWords = $settings['hero_words'] ?? null;
+    if (is_string($heroWords) && trim($heroWords) !== '') {
+        $heroWords = array_values(array_filter(array_map('trim', explode(',', $heroWords))));
+    }
+    if (! is_array($heroWords) || empty($heroWords)) {
+        $heroWords = $defaultWords;
+    }
 ?>
 
 <section id="home" class="relative min-h-screen flex items-center overflow-hidden">
     <div class="hero-grid absolute inset-0"></div>
-    <div class="absolute top-1/4 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
+    <div class="hero-orb top-1/4 -left-32 w-96 h-96 bg-indigo-600/20"></div>
+    <div class="hero-orb bottom-1/4 -right-32 w-96 h-96 bg-purple-600/20"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
+            <div data-reveal="up">
                 <p class="text-sm font-medium tracking-widest uppercase text-primary-400 mb-4">
                     &lt;Welcome to my portfolio/&gt;
                 </p>
@@ -65,20 +72,15 @@ unset($__defined_vars, $__key, $__value); ?>
                     </a>
 
                     <?php if(!empty($profile->resume_path)): ?>
-                        <a href="<?php echo e(asset('storage/' . $profile->resume_path)); ?>" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/10 text-white font-semibold hover:bg-white/5 hover:border-indigo-500/50 transition-all">
+                        <a href="<?php echo e(route('resume.download')); ?>" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/10 text-white font-semibold hover:bg-white/5 hover:border-indigo-500/50 transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             Download Resume
                         </a>
                     <?php endif; ?>
-
-                    <a href="<?php echo e(route('contact')); ?>" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-slate-300 font-semibold hover:text-white transition-colors">
-                        Contact Me
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    </a>
                 </div>
             </div>
 
-            <div class="hidden lg:flex justify-center">
+            <div class="hidden lg:flex justify-center" data-reveal="right">
                 <div class="relative animate-float">
                     <div class="absolute -inset-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-30 blur-2xl"></div>
                     <div class="relative w-72 h-72 rounded-full overflow-hidden border-4 border-indigo-500/40 shadow-2xl shadow-indigo-500/30">
@@ -106,5 +108,4 @@ unset($__defined_vars, $__key, $__value); ?>
     <a href="#about" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-500 hover:text-primary-400 transition-colors animate-bounce" aria-label="Scroll down">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
     </a>
-</section>
-<?php /**PATH C:\xampp\htdocs\portfolio\resources\views/components/frontend/hero.blade.php ENDPATH**/ ?>
+</section><?php /**PATH C:\xampp\htdocs\portfolio\resources\views/components/frontend/hero.blade.php ENDPATH**/ ?>

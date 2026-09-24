@@ -62,6 +62,48 @@
         </a>
     </div>
 
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-800"><?php echo e(number_format($totalVisits)); ?></p>
+            <p class="text-xs text-slate-500 mt-1">Total Visits</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-800"><?php echo e(number_format($todayVisits)); ?></p>
+            <p class="text-xs text-slate-500 mt-1">Visits Today</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-2-7.5 4 4 0 002 7.5zm6 2a3 3 0 10-2-5.62"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-800"><?php echo e(number_format($uniqueVisitors)); ?></p>
+            <p class="text-xs text-slate-500 mt-1">Unique Visitors</p>
+        </div>
+
+        <a href="<?php echo e(route('admin.newsletter.index')); ?>" class="bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-md transition-all group">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-800"><?php echo e(number_format($subscribers)); ?></p>
+            <p class="text-xs text-slate-500 mt-1">Newsletter Subscribers</p>
+        </a>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-xl border border-slate-200 p-6">
             <div class="flex items-center justify-between mb-5">

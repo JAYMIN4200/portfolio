@@ -1,6 +1,6 @@
 @props(['skill'])
 
-<div class="glass-card rounded-xl p-5">
+<div class="glass-card rounded-xl p-5" data-reveal="up">
     <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-3">
             @if ($skill->icon)

@@ -12,7 +12,7 @@ class AboutController extends Controller
     {
         return view('pages.about', [
             'skills' => Skill::ordered()->get()->groupBy('category'),
-            'settings' => Setting::getMany(['site_title', 'site_tagline', 'site_description']),
+            'settings' => Setting::getMany(['site_title', 'site_tagline', 'site_description', 'signature_image', 'favicon']),
         ]);
     }
 }

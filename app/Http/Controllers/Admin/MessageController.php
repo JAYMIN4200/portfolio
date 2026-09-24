@@ -24,7 +24,11 @@ class MessageController extends Controller
             $query->unread();
         }
 
-        $messages = $query->latest()->paginate(15);
+        $messages = $query->latest()->paginate(10);
+
+        if ($request->ajax()) {
+            return view('admin.messages.partials.list', compact('messages'))->render();
+        }
 
         return view('admin.messages.index', compact('messages'));
     }

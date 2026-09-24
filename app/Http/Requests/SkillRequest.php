@@ -21,4 +21,18 @@ class SkillRequest extends FormRequest
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Please enter the skill name.',
+            'name.max' => 'Skill name must not exceed 255 characters.',
+            'category.required' => 'Please enter the category.',
+            'category.max' => 'Category must not exceed 255 characters.',
+            'proficiency.required' => 'Please set the proficiency level.',
+            'proficiency.integer' => 'Proficiency must be a number.',
+            'proficiency.min' => 'Proficiency must be at least 0.',
+            'proficiency.max' => 'Proficiency must not exceed 100.',
+        ];
+    }
 }

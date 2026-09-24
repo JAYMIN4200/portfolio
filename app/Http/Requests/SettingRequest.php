@@ -16,6 +16,8 @@ class SettingRequest extends FormRequest
         return [
             'settings' => ['required', 'array'],
             'settings.*' => ['nullable', 'string', 'max:2000'],
+            'settings.signature_image' => ['nullable', 'image', 'max:2048'],
+            'settings.favicon' => ['nullable', 'image', 'max:2048'],
         ];
     }
 }

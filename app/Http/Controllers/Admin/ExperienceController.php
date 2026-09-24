@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ExperienceRequest;
 use App\Models\Experience;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ExperienceController extends Controller
@@ -19,7 +20,11 @@ class ExperienceController extends Controller
                 ->orWhere('position', 'like', "%{$search}%");
         }
 
-        $experiences = $query->ordered()->paginate(15);
+        $experiences = $query->ordered()->paginate(10);
+
+        if ($request->ajax()) {
+            return view('admin.experiences.partials.list', compact('experiences'))->render();
+        }
 
         return view('admin.experiences.index', compact('experiences'));
     }
@@ -32,12 +37,19 @@ class ExperienceController extends Controller
     public function store(ExperienceRequest $request)
     {
         $data = $request->validated();
+        $data['is_current'] = $request->boolean('is_current');
 
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('experiences', 'public');
         }
 
-        Experience::create($data);
+        DB::transaction(function () use ($data) {
+            if ($data['is_current']) {
+                Experience::query()->update(['is_current' => false]);
+            }
+
+            Experience::create($data);
+        });
 
         return redirect()->route('admin.experiences.index')->with('success', 'Experience created successfully.');
     }
@@ -50,6 +62,7 @@ class ExperienceController extends Controller
     public function update(ExperienceRequest $request, Experience $experience)
     {
         $data = $request->validated();
+        $data['is_current'] = $request->boolean('is_current');
 
         if ($request->hasFile('logo')) {
             if ($experience->logo) {
@@ -58,7 +71,13 @@ class ExperienceController extends Controller
             $data['logo'] = $request->file('logo')->store('experiences', 'public');
         }
 
-        $experience->update($data);
+        DB::transaction(function () use ($data, $experience) {
+            if ($data['is_current']) {
+                Experience::query()->whereKeyNot($experience->getKey())->update(['is_current' => false]);
+            }
+
+            $experience->update($data);
+        });
 
         return redirect()->route('admin.experiences.index')->with('success', 'Experience updated successfully.');
     }

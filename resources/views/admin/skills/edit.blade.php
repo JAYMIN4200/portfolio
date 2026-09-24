@@ -9,7 +9,7 @@
         <p class="text-slate-500 mt-1">Update the skill details below.</p>
     </div>
 
-    <form method="POST" action="{{ route('admin.skills.update', $skill) }}" class="max-w-2xl">
+    <form method="POST" action="{{ route('admin.skills.update', $skill) }}" class="w-full" data-submitting data-validate data-validate-messages='@json((new \App\Http\Requests\SkillRequest)->messages())' data-validate-error-class="text-red-500 text-xs mt-1">
         @csrf
         @method('PUT')
 
@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>
-                        <input type="number" name="sort_order" value="{{ old('sort_order', $skill->sort_order) }}" min="0"
+                        <input type="number" name="sort_order" value="{{ old('sort_order', $skill->sort_order) }}" min="0" placeholder="0"
                                class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
                     </div>
                 </div>
@@ -60,7 +60,10 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <button type="submit" class="px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">Update Skill</button>
+            <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">
+            <span data-submit-label>Update Skill</span>
+            <svg data-submit-spinner class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><path class="opacity-30" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        </button>
             <a href="{{ route('admin.skills.index') }}" class="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-colors">Cancel</a>
         </div>
     </form>

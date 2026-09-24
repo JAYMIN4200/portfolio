@@ -17,7 +17,11 @@ class ServiceController extends Controller
             $query->where('title', 'like', "%{$search}%");
         }
 
-        $services = $query->ordered()->paginate(15);
+        $services = $query->ordered()->paginate(10);
+
+        if ($request->ajax()) {
+            return view('admin.services.partials.list', compact('services'))->render();
+        }
 
         return view('admin.services.index', compact('services'));
     }

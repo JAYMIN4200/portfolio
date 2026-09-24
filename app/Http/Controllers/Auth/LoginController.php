@@ -33,7 +33,9 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(route('admin.dashboard'));
+            $user->forceFill(['last_login_at' => now()])->save();
+
+            return redirect()->intended(route('admin.dashboard'))->with('success', 'Welcome back! You have been logged in.');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.'])->onlyInput('email');
@@ -45,6 +47,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login')->with('success', 'You have been logged out.');
     }
 }

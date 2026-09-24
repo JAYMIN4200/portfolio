@@ -29,6 +29,20 @@ class ProfileController extends Controller
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
+        if ($request->hasFile('about_image')) {
+            if ($user->profile && $user->profile->about_image) {
+                Storage::disk('public')->delete($user->profile->about_image);
+            }
+            $data['about_image'] = $request->file('about_image')->store('avatars', 'public');
+        }
+
+        if ($request->hasFile('home_about_image')) {
+            if ($user->profile && $user->profile->home_about_image) {
+                Storage::disk('public')->delete($user->profile->home_about_image);
+            }
+            $data['home_about_image'] = $request->file('home_about_image')->store('avatars', 'public');
+        }
+
         if ($request->hasFile('resume')) {
             if ($user->profile && $user->profile->resume_path) {
                 Storage::disk('public')->delete($user->profile->resume_path);

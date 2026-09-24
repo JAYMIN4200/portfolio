@@ -1,4 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playball&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -7,6 +16,19 @@
 @theme {
     --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --font-signature: 'Dancing Script', 'Segoe Script', cursive;
+
+    --font-brand-poppins: 'Poppins', sans-serif;
+    --font-brand-dancing-script: 'Dancing Script', cursive;
+    --font-brand-great-vibes: 'Great Vibes', cursive;
+    --font-brand-pacifico: 'Pacifico', cursive;
+    --font-brand-allura: 'Allura', cursive;
+    --font-brand-parisienne: 'Parisienne', cursive;
+    --font-brand-satisfy: 'Satisfy', cursive;
+    --font-brand-lobster: 'Lobster', cursive;
+    --font-brand-caveat: 'Caveat', cursive;
+    --font-brand-playball: 'Playball', cursive;
 
     --color-primary-50: #eef2ff;
     --color-primary-100: #e0e7ff;
@@ -31,6 +53,7 @@
 
 html {
     scroll-behavior: smooth;
+    color-scheme: dark;
 }
 
 body {
@@ -86,4 +109,305 @@ body {
     50% { opacity: 0; }
 }
 
-.skip-animation { animation: none !important; }
+@keyframes zoom-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.animate-zoom-in {
+    animation: zoom-in 0.18s ease-out;
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateX(100%) translateY(-8px); }
+    to { opacity: 1; transform: translateX(0) translateY(0); }
+}
+
+.animate-toast-in {
+    animation: toast-in 0.3s ease-out;
+}
+
+.admin-sidebar { transition: width 0.2s ease; }
+
+.admin-sidebar nav,
+[data-mobile-admin-sidebar] div[class*='overflow'] {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.admin-sidebar nav::-webkit-scrollbar,
+[data-mobile-admin-sidebar] div[class*='overflow']::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.admin-collapse-btn svg { transition: transform 0.2s ease; }
+
+body.sidebar-collapsed .admin-sidebar { width: 5rem; }
+
+body.sidebar-collapsed .admin-sidebar .admin-link-label,
+body.sidebar-collapsed .admin-sidebar .admin-aside-section,
+body.sidebar-collapsed .admin-sidebar .admin-brand-text,
+body.sidebar-collapsed .admin-sidebar .admin-badge { display: none; }
+
+body.sidebar-collapsed .admin-sidebar .aside-link { justify-content: center; padding-left: 0; padding-right: 0; gap: 0; }
+
+body.sidebar-collapsed .admin-sidebar .admin-sidebar-head { justify-content: center; padding-left: 0; padding-right: 0; }
+
+body.sidebar-collapsed .admin-collapse-btn svg { transform: rotate(180deg); }
+
+.admin-nav-chevron { transition: transform 0.2s ease; }
+
+.admin-nav-group > .admin-nav-submenu { display: none; }
+
+.admin-nav-group.open > .admin-nav-submenu { display: block; }
+
+.admin-nav-group.open > .admin-nav-toggle .admin-nav-chevron { transform: rotate(180deg); }
+
+body.sidebar-collapsed .admin-sidebar .admin-nav-submenu,
+body.sidebar-collapsed .admin-sidebar .admin-nav-chevron { display: none; }
+
+body.sidebar-collapsed .admin-sidebar .admin-nav-group.open > .admin-nav-toggle { background-color: transparent; }
+
+.admin-nav-submenu { max-height: 999px; }
+
+.section-divider-line {
+    height: 1px;
+    width: 100%;
+    background-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+html[data-theme='light'] .section-divider-line {
+    background-image: linear-gradient(to right, transparent, rgba(15, 23, 42, 0.15), transparent);
+}
+
+/* ============ Light theme ============ */
+html[data-theme='light'] body {
+    background-color: #f8fafc;
+    color: #3f3f46;
+}
+
+html[data-theme='light'] .bg-slate-950 { background-color: #f8fafc; }
+
+html[data-theme='light'] .bg-slate-950\/80 { background-color: rgba(255, 255, 255, 0.88); }
+
+html[data-theme='light'] .border-white\/5,
+html[data-theme='light'] .border-white\/10,
+html[data-theme='light'] .border-slate-950 { border-color: #e2e8f0; }
+
+html[data-theme='light'] h1,
+html[data-theme='light'] h2,
+html[data-theme='light'] h3,
+html[data-theme='light'] h4 { color: #0f172a; }
+
+html[data-theme='light'] .text-white { color: #0f172a; }
+
+html[data-theme='light'] .hover\:text-white:hover,
+html[data-theme='light'] .hover\:text-white { color: #0f172a; }
+
+html[data-theme='light'] .text-slate-200 { color: #475569; }
+
+html[data-theme='light'] .text-slate-300 { color: #334155; }
+
+html[data-theme='light'] .text-slate-400 { color: #64748b; }
+
+html[data-theme='light'] .text-slate-500 { color: #64748b; }
+
+html[data-theme='light'] .text-white\/10 { color: rgba(15, 23, 42, 0.12); }
+
+html[data-theme='light'] .text-white\/20 { color: rgba(15, 23, 42, 0.25); }
+
+html[data-theme='light'] .bg-white\/5 { background-color: #f1f5f9; }
+
+html[data-theme='light'] .hover\:bg-white\/5:hover { background-color: #f1f5f9; }
+
+html[data-theme='light'] .hover\:bg-white\/10:hover { background-color: #f1f5f9; }
+
+html[data-theme='light'] .placeholder-slate-500::placeholder { color: #94a3b8; }
+
+html[data-theme='light'] .from-slate-800 { --tw-gradient-from: #e2e8f0; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via, rgba(226, 232, 240, 0)), var(--tw-gradient-to, rgba(148, 163, 184, 0)); }
+
+html[data-theme='light'] .to-slate-900,
+html[data-theme='light'] .via-slate-900 { --tw-gradient-to: #f1f5f9; }
+
+html[data-theme='light'] .to-primary-900\/50 { --tw-gradient-to: rgba(99, 102, 241, 0.15); }
+
+html[data-theme='light'] .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+}
+
+html[data-theme='light'] .glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25);
+}
+
+/* Keep white text on gradient/colored buttons and dark chips */
+html[data-theme='light'] .from-indigo-500 .text-white,
+html[data-theme='light'] .from-indigo-500.text-white,
+html[data-theme='light'] .to-purple-600 .text-white,
+html[data-theme='light'] .to-purple-600.text-white,
+html[data-theme='light'] .bg-slate-900\/90 .text-white,
+html[data-theme='light'] .bg-slate-900\/90.text-white,
+html[data-theme='light'] .bg-gradient-to-r .text-white,
+html[data-theme='light'] .bg-gradient-to-r.text-white,
+html[data-theme='light'] .bg-emerald-400.text-white { color: #ffffff; }
+
+html[data-theme='light'] .bg-slate-900\/90 { background-color: rgba(15, 23, 42, 0.9); }
+
+html[data-theme='light'] .text-slate-900.text-white { color: #ffffff; }
+
+/* ============ Theme-aware native controls (select dropdowns, calendar, time pickers) ============ */
+html[data-theme='light'] { color-scheme: light; }
+
+html[data-admin] { color-scheme: light; }
+
+select option {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+html[data-theme='light'] select option,
+html[data-admin] select option {
+    background-color: #ffffff;
+    color: #0f172a;
+}
+
+/* ============ Animation engine ============ */
+
+/* Reveal on scroll */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+[data-reveal='left'] { transform: translateX(-36px); }
+
+[data-reveal='right'] { transform: translateX(36px); }
+
+[data-reveal='zoom'] { transform: scale(0.92); }
+
+[data-reveal='up'] { transform: translateY(28px); }
+
+[data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* Animated gradient text */
+.gradient-text-animate {
+    background-size: 200% 200%;
+    animation: grad-shift 6s ease-in-out infinite;
+}
+
+@keyframes grad-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Floating hero orbs */
+@keyframes hero-orb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(18px, -22px) scale(1.08); }
+    66% { transform: translate(-14px, 14px) scale(0.95); }
+}
+
+.hero-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    pointer-events: none;
+    animation: hero-orb 16s ease-in-out infinite;
+}
+
+.hero-orb:nth-child(2) { animation-delay: -5s; animation-duration: 20s; }
+
+.hero-orb:nth-child(3) { animation-delay: -11s; animation-duration: 24s; }
+
+/* Slow float for blobs */
+.animate-float-slow {
+    animation: float 9s ease-in-out infinite;
+}
+
+/* Marquee */
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+}
+
+.marquee-track:hover { animation-play-state: paused; }
+
+.marquee-mask {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* Shimmer sweep for cards / buttons */
+@keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+}
+
+.shimmer-sweep {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-sweep::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 3.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Slow spin for decorative rings */
+.animate-spin-slow {
+    animation: spin 14s linear infinite;
+}
+
+/* Reduced motion: disable all animation, keep content visible */
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .marquee-track {
+        animation: none;
+    }
+
+    [data-marquee] {
+        overflow-x: auto;
+    }
+
+    .hero-orb,
+    .animate-float,
+    .animate-float-slow,
+    .animate-spin-slow,
+    .shimmer-sweep::after,
+    .gradient-text-animate,
+    .typewriter-cursor::after {
+        animation: none !important;
+    }
+}

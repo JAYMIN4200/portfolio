@@ -20,4 +20,14 @@ class ServiceRequest extends FormRequest
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'Please enter the service title.',
+            'title.max' => 'Service title must not exceed 255 characters.',
+            'description.max' => 'Description must not exceed 1000 characters.',
+            'icon.max' => 'Icon must not exceed 255 characters.',
+        ];
+    }
 }

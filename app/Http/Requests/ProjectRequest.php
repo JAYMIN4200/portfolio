@@ -31,4 +31,20 @@ class ProjectRequest extends FormRequest
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'Please enter the project title.',
+            'title.max' => 'Project title must not exceed 255 characters.',
+            'slug.max' => 'Slug must not exceed 255 characters.',
+            'slug.unique' => 'This slug is already in use. Please choose another one.',
+            'description.max' => 'Description must not exceed 1000 characters.',
+            'image.image' => 'Please upload a valid image file.',
+            'image.max' => 'Project image must not exceed 4MB.',
+            'live_url.url' => 'Please enter a valid URL (e.g. https://example.com).',
+            'github_url.url' => 'Please enter a valid GitHub URL.',
+            'technologies.*.max' => 'Each technology must not exceed 100 characters.',
+        ];
+    }
 }

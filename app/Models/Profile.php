@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Profile extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'bio', 'avatar', 'resume_path',
-        'phone', 'location', 'github', 'linkedin', 'twitter', 'website',
+        'user_id', 'title', 'bio', 'avatar', 'about_image', 'home_about_image', 'resume_path',
+        'resume_downloads',
+        'phone', 'whatsapp', 'telegram', 'location', 'github', 'linkedin', 'twitter', 'website',
+        'instagram', 'facebook', 'brand_font',
     ];
 
     public function user(): BelongsTo

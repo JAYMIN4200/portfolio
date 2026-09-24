@@ -28,7 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div class="mb-12 <?php echo e($align === 'left' ? 'text-left' : 'text-center'); ?>">
+<div class="mb-12 <?php echo e($align === 'left' ? 'text-left' : 'text-center'); ?>" data-reveal="up">
     <?php if($badge): ?>
         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-primary-500/10 text-primary-400 border border-primary-500/20 mb-4">
             <?php echo e($badge); ?>
@@ -39,4 +39,5 @@ unset($__defined_vars, $__key, $__value); ?>
     <?php if($subtitle): ?>
         <p class="mt-4 text-slate-400 text-lg max-w-2xl <?php echo e($align === 'center' ? 'mx-auto' : ''); ?>"><?php echo e($subtitle); ?></p>
     <?php endif; ?>
-</div><?php /**PATH C:\xampp\htdocs\portfolio\resources\views/components/frontend/section-header.blade.php ENDPATH**/ ?>
+</div>
+<?php /**PATH C:\xampp\htdocs\portfolio\resources\views/components/frontend/section-header.blade.php ENDPATH**/ ?>

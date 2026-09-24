@@ -5,19 +5,19 @@
 @section('meta_description', 'Browse my portfolio of projects, including web applications, websites and more.')
 
 @php
-    $settings = App\Models\Setting::getMany(['site_title', 'site_tagline', 'site_description', 'meta_keywords']);
+    $settings = App\Models\Setting::getMany(['site_title', 'site_tagline', 'site_description', 'meta_keywords', 'signature_image', 'favicon']);
 @endphp
 
 @section('content')
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-16">
-        <div class="text-center mb-16">
+        <div class="text-center mb-16" data-reveal>
             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-primary-500/10 text-primary-400 border border-primary-500/20 mb-4">Portfolio</span>
             <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight">My Projects</h1>
             <p class="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">A collection of projects I've built, ranging from web applications to open source tools.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-stagger>
             @forelse ($projects as $project)
                 <x-frontend.project-card :project="$project" />
             @empty
@@ -28,7 +28,7 @@
         </div>
 
         <div class="mt-12">
-            {{ $projects->links() }}
+            <x-pagination :paginator="$projects" />
         </div>
     </section>
 

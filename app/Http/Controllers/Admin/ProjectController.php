@@ -18,11 +18,15 @@ class ProjectController extends Controller
             $query->where('title', 'like', "%{$search}%");
         }
 
-        if ($request->input('featured')) {
-            $query->where('is_featured', true);
+        if ($request->input('featured') !== null) {
+            $query->where('is_featured', $request->boolean('featured'));
         }
 
-        $projects = $query->ordered()->paginate(15);
+        $projects = $query->ordered()->paginate(10);
+
+        if ($request->ajax()) {
+            return view('admin.projects.partials.list', compact('projects'))->render();
+        }
 
         return view('admin.projects.index', compact('projects'));
     }
@@ -64,6 +68,17 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully.');
+    }
+
+    public function toggleFeatured(Request $request, Project $project)
+    {
+        $project->update(['is_featured' => ! $project->is_featured]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'is_featured' => $project->is_featured]);
+        }
 
         return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully.');
     }

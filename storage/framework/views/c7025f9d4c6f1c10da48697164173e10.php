@@ -28,7 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div class="glass-card rounded-xl p-5">
+<div class="glass-card rounded-xl p-5" data-reveal="up">
     <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-3">
             <?php if($skill->icon): ?>

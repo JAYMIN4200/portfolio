@@ -18,7 +18,11 @@ class SkillController extends Controller
                 ->orWhere('category', 'like', "%{$search}%");
         }
 
-        $skills = $query->ordered()->paginate(15);
+        $skills = $query->ordered()->paginate(10);
+
+        if ($request->ajax()) {
+            return view('admin.skills.partials.list', compact('skills'))->render();
+        }
 
         return view('admin.skills.index', compact('skills'));
     }

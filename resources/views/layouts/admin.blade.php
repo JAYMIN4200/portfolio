@@ -1,121 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-admin>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@hasSection('title')@yield('title') | @endif Admin Panel</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128272;</text></svg>">
+    @php $adminFavicon = App\Models\Setting::get('favicon'); @endphp
+    @if ($adminFavicon)
+        <link rel="icon" type="image/png" href="{{ asset('storage/' . $adminFavicon) }}">
+    @else
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128272;</text></svg>">
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
 
+    @php $adminAvatar = auth()->user()->profile?->avatar; @endphp
+    @php $adminSignature = App\Models\Setting::get('signature_image'); @endphp
+
     <div class="min-h-screen flex">
-        <aside class="hidden lg:flex fixed inset-y-0 left-0 w-64 bg-slate-900 flex-col z-30">
-            <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-800">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                    A
-                </div>
+        <aside data-admin-sidebar class="admin-sidebar hidden lg:flex lg:sticky lg:top-0 lg:h-screen w-64 bg-slate-900 flex-col z-30 shrink-0">
+            <div class="admin-sidebar-head flex items-center gap-3 px-6 py-5 border-b border-slate-800">
+                @if ($adminSignature)
+                    <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Panel" class="h-9 w-auto object-contain shrink-0 drop-shadow">
+                @else
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h6v16H5a1 1 0 01-1-1V5zM15 4h5v5h-5V4zM15 15h5v5h-5v-5z"/></svg>
+                    </div>
+                @endif
                 <div>
-                    <p class="text-white font-semibold text-sm leading-tight">Admin Panel</p>
-                    <p class="text-slate-400 text-xs">Portfolio Admin</p>
+                    <p class="admin-brand-text text-white font-semibold text-sm leading-tight">Admin Panel</p>
+                    <p class="admin-brand-text text-slate-400 text-xs">Portfolio Admin</p>
                 </div>
             </div>
 
             <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
                 <a href="{{ route('admin.dashboard') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7V5a1 1 0 011 1v13a1 1 0 01-1 1H4a1 1 0 01-1-1v-7z"/></svg>
-                    Dashboard
+                    <span class="admin-link-label">Dashboard</span>
                 </a>
                 <a href="{{ route('admin.profile.edit') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    Profile
+                    <span class="admin-link-label">Profile</span>
                 </a>
                 @php $unread = App\Models\Message::unread()->count(); @endphp
                 <a href="{{ route('admin.messages.index') }}" class="aside-link flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.messages.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
                     <span class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                        Messages
+                        <span class="admin-link-label">Messages</span>
                     </span>
                     @if ($unread > 0)
-                        <span class="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-red-500 text-white">{{ $unread }}</span>
+                        <span class="admin-badge inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-red-500 text-white">{{ $unread }}</span>
                     @endif
                 </a>
-
-                <p class="px-4 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-600">Content</p>
-
-                <a href="{{ route('admin.skills.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.skills.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    Skills
-                </a>
-                <a href="{{ route('admin.experiences.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.experiences.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    Experience
-                </a>
-                <a href="{{ route('admin.projects.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12M6 11h12M6 15h8m-5 5H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v1a1 1 0 001 1h1a1 1 0 001-1v-5h-2v4m-9-8l4 4 4-4"/></svg>
-                    Projects
-                </a>
-                <a href="{{ route('admin.services.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    Services
+                <a href="{{ route('admin.newsletter.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.newsletter.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span class="admin-link-label">Newsletter</span>
                 </a>
 
-                <p class="px-4 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-600">Configuration</p>
+                @php $contentGroupActive = request()->routeIs('admin.skills.*') || request()->routeIs('admin.experiences.*') || request()->routeIs('admin.projects.*') || request()->routeIs('admin.services.*') || request()->routeIs('admin.testimonials.*'); @endphp
+                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="content" data-open="{{ $contentGroupActive ? 1 : 0 }}">
+                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $contentGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <span class="admin-link-label">Content</span>
+                        </span>
+                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="admin-nav-submenu space-y-1 mt-1">
+                        <a href="{{ route('admin.skills.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.skills.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Skills</a>
+                        <a href="{{ route('admin.experiences.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.experiences.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>Experience</a>
+                        <a href="{{ route('admin.projects.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>Projects</a>
+                        <a href="{{ route('admin.services.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>Services</a>
+                        <a href="{{ route('admin.testimonials.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.testimonials.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Testimonials</a>
+                    </div>
+                </div>
 
-                <a href="{{ route('admin.settings.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Settings
-                </a>
-                <a href="{{ route('home') }}" target="_blank" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    View Website
-                </a>
+                @php $pagesGroupActive = request()->routeIs('admin.posts.*') || request()->routeIs('admin.faqs.*') || request()->routeIs('admin.pages.*'); @endphp
+                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="pages" data-open="{{ $pagesGroupActive ? 1 : 0 }}">
+                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $pagesGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                            <span class="admin-link-label">Pages</span>
+                        </span>
+                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="admin-nav-submenu space-y-1 mt-1">
+                        <a href="{{ route('admin.posts.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.posts.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zm4-14v6m0 0l-2-2m2 2l2-2"/></svg>Blog Posts</a>
+                        <a href="{{ route('admin.faqs.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.faqs.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>FAQ</a>
+                        <a href="{{ route('admin.pages.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.pages.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Pages</a>
+                    </div>
+                </div>
+
+                @php $pendingMeetings = App\Models\Meeting::pending()->count(); @endphp
+                @php $businessGroupActive = request()->routeIs('admin.clients.*') || request()->routeIs('admin.meetings.*') || request()->routeIs('admin.expenses.*'); @endphp
+                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="business" data-open="{{ $businessGroupActive ? 1 : 0 }}">
+                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $businessGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span class="admin-link-label">Business</span>
+                        </span>
+                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="admin-nav-submenu space-y-1 mt-1">
+                        <a href="{{ route('admin.clients.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.clients.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Clients</a>
+                        <a href="{{ route('admin.meetings.index') }}" class="admin-sub-link aside-link flex items-center justify-between gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.meetings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}">
+                            <span class="flex items-center gap-3"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Meetings</span></span>
+                            @if ($pendingMeetings > 0)
+                                <span class="admin-badge inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-amber-500 text-slate-900">{{ $pendingMeetings }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('admin.expenses.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.expenses.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Expenses</a>
+                    </div>
+                </div>
+
+                @php $configGroupActive = request()->routeIs('admin.settings.*'); @endphp
+                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="configuration" data-open="{{ $configGroupActive ? 1 : 0 }}">
+                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $configGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
+                        <span class="flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span class="admin-link-label">Configuration</span>
+                        </span>
+                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="admin-nav-submenu space-y-1 mt-1">
+                        <a href="{{ route('admin.settings.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a>
+                        <a href="{{ route('home') }}" target="_blank" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>View Website</a>
+                    </div>
+                </div>
             </nav>
 
-            <div class="p-4 border-t border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm uppercase">
-                        {{ substr(auth()->user()->name, 0, 1) }}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-white text-sm font-medium truncate">{{ auth()->user()->name }}</p>
-                        <p class="text-slate-500 text-xs truncate">{{ auth()->user()->email }}</p>
-                    </div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="p-2 text-slate-400 hover:text-red-400 transition-colors" title="Logout">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        </button>
-                    </form>
-                </div>
+            <div class="border-t border-slate-800 p-3">
+                <form method="POST" action="{{ route('logout') }}" data-confirm="Are you sure you want to logout?" data-confirm-button="Yes, Logout">
+                    @csrf
+                    <button type="submit" class="aside-link w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <span class="admin-link-label">Logout</span>
+                    </button>
+                </form>
             </div>
         </aside>
 
-        <div class="flex-1 lg:ml-64 flex flex-col min-w-0">
+        <div class="flex-1 flex flex-col min-w-0">
             <header class="sticky top-0 z-20 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 sm:px-6">
-                <button type="button" data-mobile-admin-toggle class="lg:hidden p-2 rounded-lg hover:bg-slate-100" aria-label="Toggle sidebar">
-                    <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
+                <div class="flex items-center gap-3">
+                    <button type="button" data-mobile-admin-toggle class="lg:hidden p-2 rounded-lg hover:bg-slate-100" aria-label="Toggle sidebar">
+                        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
 
-                <div class="hidden sm:flex items-center gap-2 text-sm">
-                    @auth
-                        <a href="{{ route('home') }}" target="_blank" class="inline-flex items-center gap-1.5 text-slate-500 hover:text-indigo-600 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            View Site
-                        </a>
-                    @endauth
+                    <button type="button" data-sidebar-collapse class="admin-collapse-btn hidden lg:inline-flex p-2 rounded-lg hover:bg-slate-100" aria-label="Collapse sidebar" title="Collapse sidebar">
+                        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                    </button>
+
+                    <div class="hidden sm:block">
+                        <p class="text-sm font-semibold text-slate-800">Welcome, {{ auth()->user()->name }}</p>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <span class="text-sm text-slate-500 hidden sm:block">Welcome back, {{ auth()->user()->name }}</span>
-                    <form method="POST" action="{{ route('logout') }}" class="lg:hidden">
-                        @csrf
-                        <button type="submit" class="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-slate-100 transition-colors" title="Logout">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        </button>
-                    </form>
+                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1">
+                    <a href="{{ route('admin.meetings.index') }}" class="relative p-2 rounded-lg hover:bg-slate-100 transition-colors" title="Pending meetings" aria-label="Pending meetings">
+                        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        @if ($pendingMeetings > 0)
+                            <span class="admin-badge absolute -top-1 -right-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-amber-500 text-slate-900">{{ $pendingMeetings }}</span>
+                        @endif
+                    </a>
+                    <a href="{{ route('admin.messages.index') }}" class="relative p-2 rounded-lg hover:bg-slate-100 transition-colors" title="Unread messages" aria-label="Unread messages">
+                        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        @if ($unread > 0)
+                            <span class="admin-badge absolute -top-1 -right-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-red-500 text-white">{{ $unread }}</span>
+                        @endif
+                    </a>
+                </div>
+
+                <div class="relative" data-user-menu>
+                    <button type="button" data-user-menu-toggle class="flex items-center gap-2.5 pl-2 pr-1 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                        @if ($adminAvatar)
+                            <img src="{{ asset('storage/' . $adminAvatar) }}" alt="{{ auth()->user()->name }}" class="w-9 h-9 rounded-full object-cover">
+                        @else
+                            <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm uppercase">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </div>
+                        @endif
+                        <div class="hidden sm:block text-left">
+                            <p class="text-sm font-medium text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-slate-500 leading-tight">{{ auth()->user()->email }}</p>
+                        </div>
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <div data-user-menu-dropdown class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl border border-slate-200 shadow-lg py-1.5">
+                        <p class="px-4 py-2 text-sm text-slate-600 sm:hidden">{{ auth()->user()->name }} · {{ auth()->user()->email }}</p>
+                        <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            My Profile
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                Logout
+                            </button>
+                        </form>
+                        @if (auth()->user()->last_login_at)
+                            <div class="px-4 py-2.5 border-t border-slate-100">
+                                <p class="text-xs text-slate-400 font-medium">Last Login</p>
+                                <p class="text-sm font-semibold text-slate-700">{{ auth()->user()->last_login_at->format('M d, Y h:i A') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
                 </div>
             </header>
 
@@ -124,7 +219,13 @@
                 <div class="absolute inset-y-0 left-0 w-64 bg-slate-900 flex flex-col overflow-y-auto">
                     <div class="flex items-center justify-between px-6 py-5 border-b border-slate-800">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">A</div>
+                            @if ($adminSignature)
+                                <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Panel" class="h-8 w-auto object-contain shrink-0 drop-shadow">
+                            @else
+                                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h6v16H5a1 1 0 01-1-1V5zM15 4h5v5h-5V4zM15 15h5v5h-5v-5z"/></svg>
+                                </div>
+                            @endif
                             <p class="text-white font-semibold text-sm">Admin Panel</p>
                         </div>
                         <button type="button" class="p-2 text-slate-400 hover:text-white" data-mobile-admin-close aria-label="Close menu">
@@ -135,47 +236,79 @@
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Dashboard</a>
                         <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Profile</a>
                         <a href="{{ route('admin.messages.index') }}" class="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.messages.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Messages</a>
-                        <a href="{{ route('admin.skills.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.skills.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Skills</a>
-                        <a href="{{ route('admin.experiences.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.experiences.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Experience</a>
-                        <a href="{{ route('admin.projects.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Projects</a>
-                        <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Services</a>
-                        <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Settings</a>
-                        <a href="{{ route('home') }}" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800">View Website</a>
-                    </nav>
-                    <div class="p-4 border-t border-slate-800">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm uppercase">{{ substr(auth()->user()->name, 0, 1) }}</div>
-                            <p class="text-white text-sm font-medium truncate">{{ auth()->user()->name }}</p>
+                        <a href="{{ route('admin.newsletter.index') }}" class="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.newsletter.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Newsletter</a>
+
+                        @php $contentGroupActiveM = request()->routeIs('admin.skills.*') || request()->routeIs('admin.experiences.*') || request()->routeIs('admin.projects.*') || request()->routeIs('admin.services.*') || request()->routeIs('admin.testimonials.*'); @endphp
+                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-content" data-open="{{ $contentGroupActiveM ? 1 : 0 }}">
+                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $contentGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                                <span>Content</span>
+                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div class="admin-nav-submenu space-y-1 mt-1">
+                                <a href="{{ route('admin.skills.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.skills.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Skills</a>
+                                <a href="{{ route('admin.experiences.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.experiences.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>Experience</a>
+                                <a href="{{ route('admin.projects.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>Projects</a>
+                                <a href="{{ route('admin.services.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>Services</a>
+                                <a href="{{ route('admin.testimonials.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.testimonials.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Testimonials</a>
+                            </div>
                         </div>
+
+                        @php $pagesGroupActiveM = request()->routeIs('admin.posts.*') || request()->routeIs('admin.faqs.*') || request()->routeIs('admin.pages.*'); @endphp
+                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-pages" data-open="{{ $pagesGroupActiveM ? 1 : 0 }}">
+                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $pagesGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                                <span>Pages</span>
+                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div class="admin-nav-submenu space-y-1 mt-1">
+                                <a href="{{ route('admin.posts.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.posts.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zm4-14v6m0 0l-2-2m2 2l2-2"/></svg>Blog Posts</a>
+                                <a href="{{ route('admin.faqs.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.faqs.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>FAQ</a>
+                                <a href="{{ route('admin.pages.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.pages.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Pages</a>
+                            </div>
+                        </div>
+
+                        @php $businessGroupActiveM = request()->routeIs('admin.clients.*') || request()->routeIs('admin.meetings.*') || request()->routeIs('admin.expenses.*'); @endphp
+                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-business" data-open="{{ $businessGroupActiveM ? 1 : 0 }}">
+                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $businessGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                                <span>Business</span>
+                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div class="admin-nav-submenu space-y-1 mt-1">
+                                <a href="{{ route('admin.clients.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.clients.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Clients</a>
+                                <a href="{{ route('admin.meetings.index') }}" class="admin-sub-link flex items-center justify-between pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.meetings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}">
+                                    <span class="flex items-center gap-3"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Meetings</span></span>
+                                    @if ($pendingMeetings > 0)
+                                        <span class="admin-badge inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-amber-500 text-slate-900">{{ $pendingMeetings }}</span>
+                                    @endif
+                                </a>
+                                <a href="{{ route('admin.expenses.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.expenses.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Expenses</a>
+                            </div>
+                        </div>
+
+                        @php $settingsGroupActiveM = request()->routeIs('admin.settings.*'); @endphp
+                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-configuration" data-open="{{ $settingsGroupActiveM ? 1 : 0 }}">
+                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $settingsGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                                <span>Configuration</span>
+                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div class="admin-nav-submenu space-y-1 mt-1">
+                                <a href="{{ route('admin.settings.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a>
+                                <a href="{{ route('home') }}" target="_blank" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm text-slate-500 hover:text-white hover:bg-slate-800"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>View Website</a>
+                            </div>
+                        </div>
+                    </nav>
+                    <div class="border-t border-slate-800 p-3">
+                        <form method="POST" action="{{ route('logout') }}" data-confirm="Are you sure you want to logout?" data-confirm-button="Yes, Logout">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
 
             <main class="flex-1 p-6 sm:p-8">
-                @if (session('success'))
-                    <div class="mb-6 flex items-center justify-between gap-4 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700" data-alert>
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span class="text-sm font-medium">{{ session('success') }}</span>
-                        </div>
-                        <button type="button" class="text-emerald-500 hover:text-emerald-700" data-alert-close aria-label="Close">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-6 flex items-center justify-between gap-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700" data-alert>
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span class="text-sm font-medium">{{ session('error') }}</span>
-                        </div>
-                        <button type="button" class="text-red-500 hover:text-red-700" data-alert-close aria-label="Close">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-                @endif
-
                 @if ($errors->any())
                     <div class="mb-6 flex items-center justify-between gap-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700" data-alert>
                         <div class="flex items-center gap-3">
@@ -193,8 +326,29 @@
         </div>
     </div>
 
+    <x-bootstrap.toasts />
+
+    <div data-confirm-modal class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60" data-confirm-modal-close></div>
+        <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden animate-zoom-in">
+            <div class="flex flex-col items-center px-8 pt-9 pb-6 text-center">
+                <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-5">
+                    <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Are you sure?</h3>
+                <p class="text-sm text-slate-500" data-confirm-message>This action cannot be undone.</p>
+            </div>
+            <div class="flex border-t border-slate-100">
+                <button type="button" data-confirm-modal-cancel class="flex-1 py-3.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors border-r border-slate-100">Cancel</button>
+                <button type="button" data-confirm-modal-submit class="flex-1 py-3.5 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
             const mobileToggle = document.querySelector('[data-mobile-admin-toggle]');
             const mobileSidebar = document.querySelector('[data-mobile-admin-sidebar]');
             const closeButtons = document.querySelectorAll('[data-mobile-admin-close]');
@@ -203,18 +357,219 @@
             if (mobileToggle) mobileToggle.addEventListener('click', toggleSidebar);
             closeButtons.forEach(btn => btn.addEventListener('click', () => mobileSidebar?.classList.add('hidden')));
 
+            const userMenuToggle = document.querySelector('[data-user-menu-toggle]');
+            const userMenuDropdown = document.querySelector('[data-user-menu-dropdown]');
+            if (userMenuToggle && userMenuDropdown) {
+                userMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userMenuDropdown.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('[data-user-menu]')) userMenuDropdown.classList.add('hidden');
+                });
+            }
+
+            document.querySelectorAll('form[data-submitting]').forEach(form => {
+                form.addEventListener('submit', () => {
+                    form.querySelectorAll('[type="submit"]').forEach(btn => {
+                        const label = btn.querySelector('[data-submit-label]');
+                        const spinner = btn.querySelector('[data-submit-spinner]');
+                        btn.disabled = true;
+                        if (label) label.textContent = 'Submitting...';
+                        if (spinner) spinner.classList.remove('hidden');
+                    });
+                });
+            });
+
             document.querySelectorAll('[data-alert-close]').forEach(btn => {
                 btn.addEventListener('click', () => btn.closest('[data-alert]')?.remove());
             });
 
-            document.querySelectorAll('[data-confirm]').forEach(form => {
+            document.querySelectorAll('[data-alert]').forEach(el => {
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(-4px)';
+                    setTimeout(() => el.remove(), 400);
+                }, 3000);
+            });
+
+            const applyCollapse = (collapsed) => {
+                document.body.classList.toggle('sidebar-collapsed', collapsed);
+                localStorage.setItem('admin-sidebar-collapsed', collapsed ? '1' : '0');
+            };
+            const sidebarToggle = document.querySelector('[data-sidebar-collapse]');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => {
+                    applyCollapse(!document.body.classList.contains('sidebar-collapsed'));
+                });
+                applyCollapse(localStorage.getItem('admin-sidebar-collapsed') === '1');
+            }
+
+            const openGroup = (group, id) => {
+                group.classList.add('open');
+                localStorage.setItem('admin-nav-open-' + id, '1');
+            };
+            const closeGroup = (group, id, clearStorage = true) => {
+                group.classList.remove('open');
+                if (clearStorage && id) localStorage.removeItem('admin-nav-open-' + id);
+            };
+            const closeGroups = (groups, except) => {
+                groups.forEach(g => {
+                    if (g !== except) closeGroup(g, g.dataset.adminNavId);
+                });
+            };
+
+            document.querySelectorAll('nav').forEach(nav => {
+                const groups = Array.from(nav.querySelectorAll('[data-admin-nav-group]'));
+                groups.forEach(group => {
+                    const toggle = group.querySelector('.admin-nav-toggle');
+                    if (!toggle) return;
+                    const id = group.dataset.adminNavId;
+                    if (localStorage.getItem('admin-nav-open-' + id) === '1') {
+                        group.classList.add('open');
+                    }
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (document.body.classList.contains('sidebar-collapsed')) {
+                            applyCollapse(false);
+                            closeGroups(groups, group);
+                            openGroup(group, id);
+                            return;
+                        }
+                        if (group.classList.contains('open')) {
+                            closeGroup(group, id);
+                        } else {
+                            closeGroups(groups, group);
+                            openGroup(group, id);
+                        }
+                    });
+                });
+                const active = groups.find(g => g.dataset.open === '1');
+                groups.forEach(g => {
+                    if (g === active) {
+                        openGroup(g, g.dataset.adminNavId);
+                    } else {
+                        g.classList.remove('open');
+                        localStorage.removeItem('admin-nav-open-' + g.dataset.adminNavId);
+                    }
+                });
+            });
+
+            async function loadAdminList(url) {
+                const content = document.querySelector('[data-ajax-content]');
+                if (!content || content.dataset.loading === '1') return;
+                content.dataset.loading = '1';
+                content.classList.add('opacity-50', 'pointer-events-none');
+                try {
+                    const response = await fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) { window.location.href = url; return; }
+                    const html = await response.text();
+                    const holder = document.createElement('div');
+                    holder.innerHTML = html;
+                    const fresh = holder.querySelector('[data-ajax-content]');
+                    content.outerHTML = fresh ? fresh.outerHTML : html;
+                } catch (e) {
+                    window.location.href = url;
+                } finally {
+content.classList.remove('opacity-50', 'pointer-events-none');
+                delete content.dataset.loading;
+                }
+            }
+
+            const listForm = document.querySelector('[data-ajax-form]');
+            if (listForm) {
+                let timer;
+                const applyFilters = () => {
+                    const url = new URL(window.location.origin + window.location.pathname);
+                    new FormData(listForm).forEach((value, key) => {
+                        if (value !== '') url.searchParams.set(key, value);
+                    });
+                    url.searchParams.delete('page');
+                    loadAdminList(url.toString());
+                };
+                const searchInput = listForm.querySelector('[data-ajax-search]');
+                if (searchInput) {
+                    searchInput.addEventListener('input', () => {
+                        clearTimeout(timer);
+                        timer = setTimeout(applyFilters, 350);
+                    });
+                }
+                listForm.querySelectorAll('select').forEach(select => {
+                    select.addEventListener('change', () => { clearTimeout(timer); applyFilters(); });
+                });
+                listForm.addEventListener('submit', (e) => { e.preventDefault(); clearTimeout(timer); applyFilters(); });
+            }
+
+            document.addEventListener('click', (e) => {
+                const clear = e.target.closest('[data-ajax-clear]');
+                if (clear) { e.preventDefault(); loadAdminList(clear.href); return; }
+                const pageLink = e.target.closest('[data-ajax-pagination] a[href]');
+                if (pageLink) { e.preventDefault(); loadAdminList(pageLink.href); }
+            });
+
+            let pendingForm = null;
+            const confirmModal = document.querySelector('[data-confirm-modal]');
+            const confirmMessage = confirmModal?.querySelector('[data-confirm-message]');
+            const confirmSubmit = confirmModal?.querySelector('[data-confirm-modal-submit]');
+
+            document.addEventListener('submit', (e) => {
+                const form = e.target;
+                if (!form.matches('[data-confirm]')) return;
+
+                e.preventDefault();
+                pendingForm = form;
+                if (confirmMessage) confirmMessage.textContent = form.dataset.confirm;
+                if (confirmSubmit) confirmSubmit.textContent = form.dataset.confirmButton || 'Yes, Delete';
+                confirmModal?.classList.remove('hidden');
+            });
+
+            const closeConfirmModal = () => {
+                confirmModal?.classList.add('hidden');
+                pendingForm = null;
+            };
+            confirmModal?.querySelectorAll('[data-confirm-modal-close], [data-confirm-modal-cancel]')
+                .forEach(el => el.addEventListener('click', closeConfirmModal));
+            confirmModal?.querySelector('[data-confirm-modal-submit]')?.addEventListener('click', () => {
+                if (!pendingForm) return;
+                confirmModal?.classList.add('hidden');
+                const form = pendingForm;
+                pendingForm = null;
+
+                if (form.matches('[data-delete-ajax]')) {
+                    fetch(form.action, {
+                        method: 'DELETE',
+                        headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+                    }).then(response => {
+                        if (response.ok) {
+                            form.closest('.flex')?.remove();
+                            if (!document.querySelector('[data-delete-ajax]')) window.location.reload();
+                        }
+                    });
+                    return;
+                }
+
+                form.submit();
+            });
+
+            document.querySelectorAll('[data-quick-toggle]').forEach(form => {
                 form.addEventListener('submit', (e) => {
-                    if (!confirm(form.dataset.confirm)) e.preventDefault();
+                    e.preventDefault();
+                    fetch(form.action, {
+                        method: 'PATCH',
+                        headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+                    }).then(response => response.json()).then((data) => {
+                        if (data && data.success) window.location.reload();
+                    }).catch(() => form.submit());
                 });
             });
         });
     </script>
 
     @stack('scripts')
+
+    @include('components.inline-validation')
 </body>
 </html>

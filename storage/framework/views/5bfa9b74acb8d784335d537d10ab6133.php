@@ -28,7 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<article class="glass-card rounded-xl overflow-hidden group flex flex-col h-full">
+<article class="glass-card rounded-xl overflow-hidden group flex flex-col h-full" data-reveal="up">
     <div class="relative overflow-hidden aspect-video">
         <?php if($project->image): ?>
             <img src="<?php echo e(asset('storage/' . $project->image)); ?>" alt="<?php echo e($project->title); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy">

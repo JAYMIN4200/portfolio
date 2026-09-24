@@ -10,7 +10,7 @@
         <h1 class="text-2xl font-bold text-slate-800">Message from {{ $message->name }}</h1>
     </div>
 
-    <div class="max-w-3xl">
+    <div class="w-full">
         <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div class="p-6 border-b border-slate-200">
                 <div class="flex items-start justify-between gap-4">

@@ -8,7 +8,7 @@ class Experience extends Model
 {
     protected $fillable = [
         'company', 'position', 'description', 'start_date',
-        'end_date', 'is_current', 'location', 'logo', 'sort_order',
+        'end_date', 'is_current', 'location', 'website', 'logo', 'sort_order',
     ];
 
     protected function casts(): array

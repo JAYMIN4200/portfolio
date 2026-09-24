@@ -1,6 +1,6 @@
 @props(['title', 'subtitle' => null, 'align' => 'center', 'badge' => null])
 
-<div class="mb-12 {{ $align === 'left' ? 'text-left' : 'text-center' }}">
+<div class="mb-12 {{ $align === 'left' ? 'text-left' : 'text-center' }}" data-reveal="up">
     @if ($badge)
         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-primary-500/10 text-primary-400 border border-primary-500/20 mb-4">
             {{ $badge }}

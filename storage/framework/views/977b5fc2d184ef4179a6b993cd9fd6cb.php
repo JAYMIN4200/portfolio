@@ -28,7 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div class="glass-card rounded-xl p-6 h-full">
+<div class="glass-card rounded-xl p-6 h-full" data-reveal="up">
     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 mb-4">
         <?php if($service->icon): ?>
             <img src="<?php echo e($service->icon); ?>" alt="<?php echo e($service->title); ?>" class="w-6 h-6 object-contain">
