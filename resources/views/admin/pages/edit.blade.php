@@ -32,7 +32,7 @@
 
                 <div class="flex items-center">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_published" value="1" {{ old('is_published', $page->is_published) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <input type="checkbox" name="is_published" value="1" {{ old('is_published', $page->is_published) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500">
                         <span class="text-sm text-slate-700 font-medium">Published on the website</span>
                     </label>
                 </div>

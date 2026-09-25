@@ -27,6 +27,8 @@
 
     $socialIcons = array_values(array_filter($socialIcons, fn ($icon) => ! empty($icon['href'])));
     $hasSocials = ! empty($socialIcons);
+
+    $signatureUrl = App\Models\Setting::imageUrl('signature_image');
 @endphp
 
 <footer class="border-t border-white/5 bg-slate-950 mt-24">
@@ -34,8 +36,8 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
                 <div class="flex items-center gap-2 mb-4">
-                    @if (!empty($settings['signature_image']))
-                        <img src="{{ asset('storage/' . $settings['signature_image']) }}" alt="{{ $settings['site_title'] ?? config('app.name') }}" class="h-8 w-auto object-contain">
+                    @if ($signatureUrl)
+                        <img src="{{ $signatureUrl }}" alt="{{ $settings['site_title'] ?? config('app.name') }}" class="h-8 w-auto object-contain">
                     @else
                         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/30">
                             {{ strtoupper(substr($settings['site_title'] ?? config('app.name'), 0, 1)) }}

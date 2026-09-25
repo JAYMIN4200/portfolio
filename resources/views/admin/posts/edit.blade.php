@@ -38,9 +38,9 @@
                 <div class="grid grid-cols-3 gap-5 items-end">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Featured Image</label>
-                        @if ($post->image)
+                        @if ($postImageUrl = $post->imageUrl())
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-20 h-14 rounded-lg object-cover border border-slate-200">
+                                <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-20 h-14 rounded-lg object-cover border border-slate-200">
                             </div>
                         @endif
                         <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
@@ -51,7 +51,7 @@
                     </div>
                     <div class="flex items-end pb-2.5">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_published" value="1" {{ old('is_published', $post->is_published) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" name="is_published" value="1" {{ old('is_published', $post->is_published) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500">
                             <span class="text-sm text-slate-700 font-medium">Published</span>
                         </label>
                     </div>

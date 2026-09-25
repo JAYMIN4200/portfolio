@@ -1,6 +1,6 @@
 @props(['skill'])
 
-<div class="glass-card rounded-xl p-5" data-reveal="up">
+<div class="glass-card rounded-xl p-5 hover-slide-left" data-reveal="up">
     <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-3">
             @if ($skill->icon)
@@ -15,7 +15,7 @@
         <span class="text-sm font-semibold text-primary-400">{{ $skill->proficiency }}%</span>
     </div>
     <div class="h-2 rounded-full bg-white/5 overflow-hidden">
-        <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000"
-             style="width: {{ $skill->proficiency }}%"></div>
+        <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+             data-skill-bar data-target-width="{{ $skill->proficiency }}" style="--target-width: {{ $skill->proficiency }}%"></div>
     </div>
 </div>

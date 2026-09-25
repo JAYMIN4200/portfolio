@@ -6,7 +6,7 @@
             {{ $badge }}
         </span>
     @endif
-    <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight">{{ $title }}</h2>
+    <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight"><span class="heading-accent">{{ $title }}</span></h2>
     @if ($subtitle)
         <p class="mt-4 text-slate-400 text-lg max-w-2xl {{ $align === 'center' ? 'mx-auto' : '' }}">{{ $subtitle }}</p>
     @endif

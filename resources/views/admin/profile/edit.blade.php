@@ -161,48 +161,42 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Avatar</label>
-                    @if ($user->profile && $user->profile->avatar)
-                        <div class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit">
-                            <img src="{{ asset('storage/' . $user->profile->avatar) }}" alt="Avatar" data-avatar-preview class="w-20 h-20 object-cover">
-                        </div>
-                    @endif
+                    <div class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit">
+                        <img src="{{ $user->profile?->avatarUrl() ?? asset('images/default-avatar.svg') }}" alt="Avatar" data-avatar-preview class="w-20 h-20 object-cover">
+                    </div>
                     <input type="file" name="avatar" accept="image/*" data-file-preview="avatar"
                            class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
                     <p class="text-xs text-slate-400 mt-1">Home hero photo. Max 15MB.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">About Image</label>
-                    @if ($user->profile && $user->profile->about_image)
-                        <div class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit">
-                            <img src="{{ asset('storage/' . $user->profile->about_image) }}" alt="About" data-about-preview class="w-20 h-20 object-cover">
-                        </div>
-                    @endif
+                    <div class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit">
+                        <img src="{{ $user->profile?->aboutImageUrl() ?? asset('images/default-profile.svg') }}" alt="About" data-about-preview class="w-20 h-20 object-cover">
+                    </div>
                     <input type="file" name="about_image" accept="image/*" data-file-preview="about"
                            class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
                     <p class="text-xs text-slate-400 mt-1">About page photo. Max 15MB. Recommended: 600x600px</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Home About Image</label>
-                    @if ($user->profile && $user->profile->home_about_image)
-                        <div class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit">
-                            <img src="{{ asset('storage/' . $user->profile->home_about_image) }}" alt="Home About" data-home-about-preview class="w-20 h-20 object-cover">
-                        </div>
-                    @endif
+                    <div class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit">
+                        <img src="{{ $user->profile?->homeAboutImageUrl() ?? asset('images/default-profile.svg') }}" alt="Home About" data-home-about-preview class="w-20 h-20 object-cover">
+                    </div>
                     <input type="file" name="home_about_image" accept="image/*" data-file-preview="home-about"
                            class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
                     <p class="text-xs text-slate-400 mt-1">Home page About section photo. Max 15MB. Recommended: 800x600px</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Resume (PDF)</label>
-                    @if ($user->profile && $user->profile->resume_path)
+                    @if ($user->profile?->hasResume())
                         <div class="mb-2 flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50">
                             <svg class="w-6 h-6 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                             <div class="flex-1 min-w-0">
-                                <iframe src="{{ asset('storage/' . $user->profile->resume_path) }}" title="Resume preview" class="hidden"></iframe>
+                                <iframe src="{{ $user->profile->resumeUrl() }}" title="Resume preview" class="hidden"></iframe>
                                 <p class="text-sm font-medium text-slate-800 truncate">{{ basename($user->profile->resume_path) }}</p>
                                 <p class="text-xs text-slate-400">{{ $user->profile->resume_downloads }} downloads</p>
                             </div>
-                            <a href="{{ asset('storage/' . $user->profile->resume_path) }}" target="_blank" class="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700">
+                            <a href="{{ $user->profile->resumeUrl() }}" target="_blank" class="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 Preview
                             </a>

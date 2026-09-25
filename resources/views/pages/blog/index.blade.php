@@ -26,10 +26,10 @@
                 @foreach ($posts as $post)
                     <a href="{{ route('blog.show', $post->slug) }}" class="glass-card rounded-2xl overflow-hidden transition-all hover:border-primary-500/40 hover:-translate-y-1 hover:bg-white/5">
                         <div class="aspect-video overflow-hidden">
-                            @if ($post->image)
-                                <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                            @if ($postImageUrl = $post->imageUrl())
+                                <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
                             @else
-                                <img src="https://picsum.photos/seed/{{ $post->slug }}/768/432" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('images/default-profile.svg') }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
                             @endif
                         </div>
                         <div class="p-6">

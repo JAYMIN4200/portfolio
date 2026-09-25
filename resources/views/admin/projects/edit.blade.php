@@ -37,11 +37,9 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Image</label>
-                    @if ($project->image)
-                        <div class="mb-2">
-                            <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="w-24 h-18 rounded-lg object-cover border border-slate-200">
-                        </div>
-                    @endif
+                    <div class="mb-2">
+                        <img src="{{ $project->imageUrl() }}" alt="{{ $project->title }}" class="w-24 h-18 rounded-lg object-cover border border-slate-200">
+                    </div>
                     <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
                     @error('image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -74,7 +72,7 @@
                     </div>
                     <div class="flex items-end pb-2.5">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $project->is_featured) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $project->is_featured) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500">
                             <span class="text-sm text-slate-700 font-medium">Featured project</span>
                         </label>
                     </div>

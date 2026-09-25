@@ -5,14 +5,15 @@
     $brandFontClass = $profile && $profile->brand_font
         ? 'font-brand-' . $profile->brand_font
         : 'font-brand-dancing-script';
+    $signatureUrl = App\Models\Setting::imageUrl('signature_image');
 @endphp
 
-<header class="fixed top-0 inset-x-0 z-50 bg-slate-950/80 backdrop-blur-lg border-b border-white/5">
+<header data-nav class="fixed top-0 inset-x-0 z-50 bg-slate-950/80 backdrop-blur-lg border-b border-white/5">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                @if (!empty($settings['signature_image']))
-                    <img src="{{ asset('storage/' . $settings['signature_image']) }}" alt="{{ $settings['site_title'] ?? config('app.name') }}" class="h-9 w-auto object-contain drop-shadow group-hover:scale-105 transition-transform">
+                @if ($signatureUrl)
+                    <img src="{{ $signatureUrl }}" alt="{{ $settings['site_title'] ?? config('app.name') }}" class="h-9 w-auto object-contain drop-shadow group-hover:scale-105 transition-transform">
                 @else
                     <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
                         {{ strtoupper(substr($settings['site_title'] ?? config('app.name'), 0, 1)) }}

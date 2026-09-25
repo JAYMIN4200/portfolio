@@ -13,8 +13,8 @@
     <div class="flex flex-wrap items-center gap-3 mb-3 text-sm">
         @if ($experience->website)
             <a href="{{ $experience->website }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-primary-400 font-medium hover:text-primary-300 transition-colors">
-                @if ($experience->logo)
-                    <img src="{{ asset('storage/' . $experience->logo) }}" alt="{{ $experience->company }}" class="w-5 h-5 rounded object-contain">
+                @if ($logoUrl = $experience->logoUrl())
+                    <img src="{{ $logoUrl }}" alt="{{ $experience->company }}" class="w-5 h-5 rounded object-contain">
                 @else
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 @endif
@@ -23,8 +23,8 @@
             </a>
         @else
             <span class="inline-flex items-center gap-1.5 text-primary-400 font-medium">
-                @if ($experience->logo)
-                    <img src="{{ asset('storage/' . $experience->logo) }}" alt="{{ $experience->company }}" class="w-5 h-5 rounded object-contain">
+                @if ($logoUrl = $experience->logoUrl())
+                    <img src="{{ $logoUrl }}" alt="{{ $experience->company }}" class="w-5 h-5 rounded object-contain">
                 @else
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 @endif

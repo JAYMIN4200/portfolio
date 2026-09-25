@@ -2,6 +2,11 @@
 @section('title', 'Settings')
 @section('content')
 
+    @php
+        $signaturePreview = App\Models\Setting::imageUrl('signature_image');
+        $faviconPreview = App\Models\Setting::imageUrl('favicon');
+    @endphp
+
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-slate-800">Website Settings</h1>
         <p class="text-slate-500 mt-1">Configure your portfolio website's appearance and metadata.</p>
@@ -48,8 +53,8 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Signature Image</label>
                 <p class="text-xs text-slate-400 mb-2">Shown next to your name in the header (replaces the letter logo). Use a transparent PNG signature.</p>
-                <div data-signature-preview class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit {{ ($settings['signature_image'] ?? false) ? '' : 'hidden' }}">
-                    <img src="{{ isset($settings['signature_image']) ? asset('storage/' . $settings['signature_image']) : '' }}" alt="Signature" class="w-28 h-12 object-contain bg-slate-100">
+                <div data-signature-preview class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit {{ $signaturePreview ? '' : 'hidden' }}">
+                    <img src="{{ $signaturePreview }}" alt="Signature" class="w-28 h-12 object-contain bg-slate-100">
                 </div>
                 <input type="file" name="settings[signature_image]" accept="image/*" data-signature-input
                        class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
@@ -58,8 +63,8 @@
             <div class="mt-5">
                 <label class="block text-sm font-medium text-slate-700 mb-1">Favicon</label>
                 <p class="text-xs text-slate-400 mb-2">Shown in the browser tab next to your site name.</p>
-                <div data-favicon-preview class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit {{ ($settings['favicon'] ?? false) ? '' : 'hidden' }}">
-                    <img src="{{ isset($settings['favicon']) ? asset('storage/' . $settings['favicon']) : '' }}" alt="Favicon" class="w-12 h-12 object-contain bg-slate-100">
+                <div data-favicon-preview class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit {{ $faviconPreview ? '' : 'hidden' }}">
+                    <img src="{{ $faviconPreview }}" alt="Favicon" class="w-12 h-12 object-contain bg-slate-100">
                 </div>
                 <input type="file" name="settings[favicon]" accept="image/*" data-favicon-input
                        class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">

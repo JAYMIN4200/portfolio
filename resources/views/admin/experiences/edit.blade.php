@@ -55,15 +55,15 @@
                 <div class="grid grid-cols-3 gap-5">
                     <div class="flex items-end pb-2.5">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_current" value="1" {{ old('is_current', $experience->is_current) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" name="is_current" value="1" {{ old('is_current', $experience->is_current) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500">
                             <span class="text-sm text-slate-700 font-medium">Currently working here</span>
                         </label>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Logo</label>
-                        @if ($experience->logo)
+                        @if ($logoUrl = $experience->logoUrl())
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $experience->logo) }}" alt="Logo" class="w-10 h-10 rounded object-contain border border-slate-200">
+                                <img src="{{ $logoUrl }}" alt="Logo" class="w-10 h-10 rounded object-contain border border-slate-200">
                             </div>
                         @endif
                         <input type="file" name="logo" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">

@@ -13,8 +13,9 @@
         })();
     </script>
 
-    @if (!empty($settings['favicon']))
-        <link rel="icon" type="image/png" href="{{ asset('storage/' . $settings['favicon']) }}">
+    @php $faviconUrl = App\Models\Setting::imageUrl('favicon'); @endphp
+    @if ($faviconUrl)
+        <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
     @else
         <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128187;</text></svg>">
     @endif
@@ -46,8 +47,7 @@
 
     <x-frontend.footer :settings="$settings" />
 
-    <button type="button" data-scroll-top data-scroll-top-target aria-label="Back to top"
-            class="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 opacity-0 pointer-events-none translate-y-3 transition-all duration-300 hover:scale-105 flex items-center justify-center">
+    <button type="button" data-back-to-top aria-label="Back to top" class="back-to-top">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
     </button>
 
@@ -68,19 +68,6 @@
                 });
             }
             applyThemeUI();
-
-            const scrollTop = document.querySelector('[data-scroll-top]');
-            if (scrollTop) {
-                const toggle = () => {
-                    const show = window.scrollY > 400;
-                    scrollTop.classList.toggle('opacity-0', !show);
-                    scrollTop.classList.toggle('pointer-events-none', !show);
-                    scrollTop.classList.toggle('translate-y-3', !show);
-                };
-                window.addEventListener('scroll', () => { requestAnimationFrame(toggle); }, { passive: true });
-                scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-                toggle();
-            }
 
             document.querySelectorAll('[data-alert]').forEach(el => {
                 setTimeout(() => {

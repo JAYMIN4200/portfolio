@@ -63,15 +63,7 @@
             <div class="relative">
                 <div class="absolute -inset-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl opacity-10 blur-2xl"></div>
                 <div class="relative rounded-2xl overflow-hidden border border-white/10 aspect-4/3">
-                    @if ($profile && $profile->home_about_image)
-                        <img src="{{ asset('storage/' . $profile->home_about_image) }}" alt="{{ $profile->user->name }}" class="w-full h-full object-cover">
-                    @elseif ($profile && $profile->avatar)
-                        <img src="{{ asset('storage/' . $profile->avatar) }}" alt="{{ $profile->user->name }}" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                            <span class="text-9xl text-white/10 font-bold">{{ strtoupper(substr($profile->user->name ?? 'D', 0, 1)) }}</span>
-                        </div>
-                    @endif
+                    <img src="{{ $profile?->homeAboutImageUrl() ?? asset('images/default-profile.svg') }}" alt="{{ $profile?->user->name }}" class="w-full h-full object-cover">
                 </div>
             </div>
 
@@ -107,7 +99,7 @@
                         Let's Talk
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/></svg>
                     </a>
-                    @if ($profile && $profile->resume_path)
+                    @if ($profile?->hasResume())
                         <a href="{{ route('resume.download') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/10 text-white font-semibold hover:bg-white/5 hover:border-indigo-500/50 transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             Download Resume

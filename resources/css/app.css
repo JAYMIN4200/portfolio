@@ -282,6 +282,66 @@ html[data-admin] select option {
     color: #0f172a;
 }
 
+/* ============ Theme-aware checkboxes and radios ============ */
+/*
+ * Native checkboxes/radios ignore the `text-*` utilities (those only set
+ * `color`), so `text-indigo-600` on a checkbox was a silent no-op and the
+ * control fell back to the browser default. `accent-color` is the property
+ * that actually themes them.
+ */
+input[type='checkbox'],
+input[type='radio'] {
+    accent-color: var(--color-indigo-600);
+}
+
+/*
+ * The auth pages (data-auth) render a white card on a dark page, so the
+ * unchecked box needs an explicit dark fill rather than inheriting the
+ * browser default for the surrounding dark surface. appearance is disabled
+ * so the box and the tick are drawn identically in every browser.
+ */
+[data-auth] input[type='checkbox'],
+[data-auth] input[type='radio'] {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: none;
+    background-color: var(--color-slate-900);
+    border: 1px solid var(--color-slate-600);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+[data-auth] input[type='checkbox']:checked,
+[data-auth] input[type='radio']:checked {
+    background-color: var(--color-indigo-600);
+    border-color: var(--color-indigo-600);
+}
+
+[data-auth] input[type='checkbox']:checked::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 78%;
+}
+
+[data-auth] input[type='radio'] {
+    border-radius: 9999px;
+}
+
+[data-auth] input[type='radio']:checked {
+    background-image: radial-gradient(circle, #ffffff 0%, #ffffff 42%, transparent 45%);
+}
+
+[data-auth] input[type='checkbox']:focus-visible,
+[data-auth] input[type='radio']:focus-visible {
+    outline: 2px solid var(--color-indigo-500);
+    outline-offset: 2px;
+}
+
 /* ============ Animation engine ============ */
 
 /* Reveal on scroll */
@@ -316,11 +376,14 @@ html[data-admin] select option {
     50% { background-position: 100% 50%; }
 }
 
-/* Floating hero orbs */
+/* Floating hero orbs.
+ * The parallax offset is fed in via --parallax-y and folded into the
+ * keyframes, because a CSS animation's transform would otherwise win
+ * over any transform JS sets inline. */
 @keyframes hero-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(18px, -22px) scale(1.08); }
-    66% { transform: translate(-14px, 14px) scale(0.95); }
+    0%, 100% { transform: translate(0, var(--parallax-y, 0px)) scale(1); }
+    33% { transform: translate(18px, calc(var(--parallax-y, 0px) - 22px)) scale(1.08); }
+    66% { transform: translate(-14px, calc(var(--parallax-y, 0px) + 14px)) scale(0.95); }
 }
 
 .hero-orb {
@@ -385,6 +448,269 @@ html[data-admin] select option {
     animation: spin 14s linear infinite;
 }
 
+/* ============ Nav scrolled state ============ */
+
+[data-nav] {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+[data-nav].is-scrolled {
+    background-color: rgba(2, 6, 23, 0.92);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* ============ Cursor spotlight on glass cards ============ */
+/*
+ * JS writes the pointer position into --spot-x / --spot-y; the gradient
+ * below fades in on hover. Kept to a pseudo-element so the card's own
+ * background is untouched.
+ */
+.spotlight-card {
+    position: relative;
+    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.spotlight-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(320px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(129, 140, 248, 0.55), transparent 65%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+.spotlight-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(260px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(99, 102, 241, 0.14), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+.spotlight-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px -18px rgba(99, 102, 241, 0.45);
+}
+
+.spotlight-card:hover::before,
+.spotlight-card:hover::after {
+    opacity: 1;
+}
+
+/* ---------- Hover variants ----------
+ * Each card type gets a different personality. These are intentionally
+ * mutually exclusive: all of them decorate the card with ::before, so
+ * stacking two variants would let the later rule win outright.
+ *   .spotlight-card   cursor-following glow   (about stat cards)
+ *   .hover-slide-left card nudges to the left (skill bars)
+ *   .hover-run-border chasing border light   (project cards)
+ */
+
+/* Nudges to the left on hover, with a matching shadow on that side. */
+.hover-slide-left {
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hover-slide-left:hover {
+    transform: translateX(-10px);
+    border-color: rgba(129, 140, 248, 0.45);
+    box-shadow: -14px 20px 40px -20px rgba(99, 102, 241, 0.6);
+}
+
+/* A highlight that keeps running around the border while hovered.
+ * The gradient angle is animated via @property rather than rotating the
+ * element, so the ring never juts outside the card at intermediate angles. */
+@property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes border-run {
+    to { --border-angle: 360deg; }
+}
+
+.hover-run-border {
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.4s ease;
+}
+
+.hover-run-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(from var(--border-angle, 0deg),
+        transparent 0deg,
+        var(--color-indigo-400) 55deg,
+        var(--color-purple-500) 120deg,
+        transparent 200deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    /* Paused rather than absent, so the highlight holds its position
+     * instead of snapping back to 0deg while fading out. */
+    animation: border-run 2.6s linear infinite;
+    animation-play-state: paused;
+}
+
+.hover-run-border:hover::before {
+    opacity: 1;
+    animation-play-state: running;
+}
+
+.hover-run-border:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 22px 46px -22px rgba(168, 85, 247, 0.6);
+}
+
+/* Gradient hairline border for highlighted cards (featured projects, etc.) */
+.glow-border {
+    position: relative;
+}
+
+.glow-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(168, 85, 247, 0.5), transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* ============ Animated bars & counters ============ */
+
+/* Bars default to their real width so they stay visible with JS off.
+ * JS collapses them to 0 (safe: the card is still opacity 0 until
+ * revealed) and then animates them to the target on scroll. */
+[data-skill-bar] {
+    width: var(--target-width, 0%);
+    transition: width 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Section heading accent that draws itself in on reveal */
+.heading-accent {
+    position: relative;
+    display: inline-block;
+}
+
+.heading-accent::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.35rem;
+    width: 100%;
+    height: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, var(--color-indigo-500), var(--color-purple-500));
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s;
+}
+
+/* The accent lives inside a [data-reveal] wrapper, so the underline is
+ * driven off that wrapper's reveal state rather than its own observer. */
+.heading-accent.is-revealed::after,
+[data-reveal].is-revealed .heading-accent::after {
+    transform: scaleX(1);
+}
+
+/* ============ Magnetic buttons ============ */
+
+[data-magnetic] {
+    transition: transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+}
+
+/* ============ Back to top ============ */
+
+.back-to-top {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 55;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--color-indigo-500), var(--color-purple-600));
+    box-shadow: 0 10px 30px -8px rgba(99, 102, 241, 0.7);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px) scale(0.85);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0.3s;
+}
+
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.back-to-top:hover {
+    box-shadow: 0 14px 36px -8px rgba(168, 85, 247, 0.8);
+}
+
+.back-to-top svg {
+    transition: transform 0.3s ease;
+}
+
+.back-to-top:hover svg {
+    transform: translateY(-3px);
+}
+
+/* Ring pulse behind the back-to-top button */
+.back-to-top::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(129, 140, 248, 0.6);
+    animation: btt-pulse 2.4s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes btt-pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    70% { transform: scale(1.45); opacity: 0; }
+    100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* ============ Hero parallax ============ */
+
+/* JS writes the scroll offset into --parallax-y rather than setting
+ * `transform` directly, so animated elements (the hero orbs) keep their
+ * keyframe transform instead of having it silently overridden. */
+[data-parallax] {
+    transform: translate3d(0, var(--parallax-y, 0px), 0);
+    will-change: transform;
+}
+
 /* Reduced motion: disable all animation, keep content visible */
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] {
@@ -407,7 +733,53 @@ html[data-admin] select option {
     .animate-spin-slow,
     .shimmer-sweep::after,
     .gradient-text-animate,
-    .typewriter-cursor::after {
+    .typewriter-cursor::after,
+    .back-to-top::before,
+    .hover-run-border::before {
         animation: none !important;
     }
+
+    .spotlight-card,
+    .spotlight-card::before,
+    .spotlight-card::after,
+    .hover-slide-left,
+    .hover-run-border,
+    [data-magnetic],
+    [data-parallax],
+    .back-to-top {
+        transition: none !important;
+        transform: none !important;
+    }
+
+    /* The running border stops dead, so freeze it somewhere visible
+     * rather than leaving the card looking unstyled on hover. */
+    .hover-run-border:hover {
+        transform: none !important;
+        box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.45) !important;
+    }
+
+    .hover-run-border:hover::before {
+        opacity: 1;
+        --border-angle: 90deg;
+    }
+
+    .spotlight-card:hover {
+        transform: none !important;
+    }
+
+    .spotlight-card::before,
+    .spotlight-card::after {
+        display: none;
+    }
+
+    /* Bars and counters must still land on their real values, not stay at 0 */
+    [data-skill-bar] {
+        width: var(--target-width, 0%) !important;
+        transition: none !important;
+    }
+
+    .heading-accent::after {
+        transform: scaleX(1) !important;
+    }
 }
+

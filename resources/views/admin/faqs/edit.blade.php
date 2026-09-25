@@ -30,7 +30,7 @@
                     </div>
                     <div class="flex items-end pb-2.5">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', $faq->is_visible) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', $faq->is_visible) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500">
                             <span class="text-sm text-slate-700 font-medium">Visible on the website</span>
                         </label>
                     </div>

@@ -106,5 +106,135 @@ document.addEventListener('DOMContentLoaded', function () {
                 card.style.transform = '';
             });
         });
+
+        // Cursor spotlight: feed the pointer position into CSS custom props
+        document.querySelectorAll('.spotlight-card').forEach(function (card) {
+            card.addEventListener('pointermove', function (e) {
+                var rect = card.getBoundingClientRect();
+                card.style.setProperty('--spot-x', (e.clientX - rect.left) + 'px');
+                card.style.setProperty('--spot-y', (e.clientY - rect.top) + 'px');
+            });
+        });
+
+        // Magnetic buttons pull slightly toward the cursor
+        document.querySelectorAll('[data-magnetic]').forEach(function (el) {
+            var strength = parseFloat(el.getAttribute('data-magnetic')) || 0.25;
+
+            el.addEventListener('pointermove', function (e) {
+                var rect = el.getBoundingClientRect();
+                var x = (e.clientX - rect.left - rect.width / 2) * strength;
+                var y = (e.clientY - rect.top - rect.height / 2) * strength;
+                el.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px)';
+            });
+
+            el.addEventListener('pointerleave', function () {
+                el.style.transform = '';
+            });
+        });
+    }
+
+    // Count numbers up when they scroll into view
+    var animateValue = function (el) {
+        var target = parseFloat(el.getAttribute('data-counter'));
+        if (isNaN(target)) return;
+
+        var suffix = el.getAttribute('data-counter-suffix') || '';
+        var decimals = parseInt(el.getAttribute('data-counter-decimals') || '0', 10);
+        var duration = parseInt(el.getAttribute('data-counter-duration') || '1600', 10);
+        var start = null;
+
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            el.textContent = target.toFixed(decimals) + suffix;
+            return;
+        }
+
+        var step = function (timestamp) {
+            if (start === null) start = timestamp;
+            var progress = Math.min((timestamp - start) / duration, 1);
+            // easeOutExpo
+            var eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            el.textContent = (target * eased).toFixed(decimals) + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+        };
+
+        requestAnimationFrame(step);
+    };
+
+    var once = function (targets, apply) {
+        if (!targets.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            targets.forEach(apply);
+            return;
+        }
+
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                apply(entry.target);
+                io.unobserve(entry.target);
+            });
+        }, { threshold: 0.35 });
+
+        targets.forEach(function (el) { io.observe(el); });
+    };
+
+    once(document.querySelectorAll('[data-counter]'), animateValue);
+
+    // Skill bars grow from 0 to their stored proficiency. --target-width is
+    // already in the markup so the bar is correct with JS disabled; collapse
+    // it to 0 here, which is invisible because the card is still opacity 0.
+    var skillBars = document.querySelectorAll('[data-skill-bar]');
+    skillBars.forEach(function (bar) { bar.style.width = '0%'; });
+
+    once(skillBars, function (bar) {
+        bar.style.width = bar.getAttribute('data-target-width') + '%';
+    });
+
+    // ---------- Scroll-linked effects ----------
+
+    var nav = document.querySelector('[data-nav]');
+    var backToTop = document.querySelector('[data-back-to-top]');
+    var parallaxEls = document.querySelectorAll('[data-parallax]');
+    var ticking = false;
+
+    var onScroll = function () {
+        var y = window.scrollY || document.documentElement.scrollTop;
+
+        if (nav) {
+            nav.classList.toggle('is-scrolled', y > 12);
+        }
+
+        if (backToTop) {
+            backToTop.classList.toggle('is-visible', y > 600);
+        }
+
+        if (parallaxEls.length) {
+            parallaxEls.forEach(function (el) {
+                var speed = parseFloat(el.getAttribute('data-parallax')) || 0.15;
+                // Clamp so the offset can't run away on long pages.
+                var offset = Math.max(-160, Math.min(y * speed, 160));
+                el.style.setProperty('--parallax-y', offset.toFixed(2) + 'px');
+            });
+        }
+
+        ticking = false;
+    };
+
+    var requestTick = function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(onScroll);
+    };
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', requestTick);
+    onScroll();
+
+    if (backToTop) {
+        backToTop.addEventListener('click', function () {
+            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        });
     }
 });

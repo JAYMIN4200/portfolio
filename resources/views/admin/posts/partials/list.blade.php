@@ -14,8 +14,8 @@
                     <tr class="hover:bg-slate-50/50 transition-colors">
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-3">
-                                @if ($post->image)
-                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-10 h-10 rounded-lg object-cover">
+                                @if ($postImageUrl = $post->imageUrl())
+                                    <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-10 h-10 rounded-lg object-cover">
                                 @endif
                                 <div>
                                     <p class="font-medium text-slate-800">{{ $post->title }}</p>

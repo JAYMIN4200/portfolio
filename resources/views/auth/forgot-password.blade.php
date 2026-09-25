@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-auth>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password | Admin Panel</title>
-    @php $authFavicon = App\Models\Setting::get('favicon'); @endphp
+    @php $authFavicon = App\Models\Setting::imageUrl('favicon'); @endphp
     @if ($authFavicon)
-        <link rel="icon" type="image/png" href="{{ asset('storage/' . $authFavicon) }}">
+        <link rel="icon" type="image/png" href="{{ $authFavicon }}">
     @else
         <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128272;</text></svg>">
     @endif
@@ -20,7 +20,7 @@
         <div class="text-center mb-8">
             <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 backdrop-blur flex items-center justify-center overflow-hidden shadow-xl shadow-indigo-500/20 mx-auto mb-4">
                 @if ($authFavicon)
-                    <img src="{{ asset('storage/' . $authFavicon) }}" alt="Favicon" class="w-full h-full object-cover">
+                    <img src="{{ $authFavicon }}" alt="Favicon" class="w-full h-full object-cover">
                 @else
                     <span class="text-white font-bold text-2xl">A</span>
                 @endif
@@ -29,7 +29,7 @@
             <p class="text-slate-400 mt-1 text-sm">Enter your email address to reset your password.</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-2xl border border-white/40 p-8">
+        <div class="bg-slate-900/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-indigo-950/40 border border-white/10 p-8">
             @if (session('status'))
                 <div class="mb-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
                     {{ session('status') }}
@@ -37,7 +37,7 @@
             @endif
 
             @if ($errors->any())
-                <div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
                     @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
                     @endforeach
@@ -47,9 +47,9 @@
             <form method="POST" action="{{ route('password.email') }}" data-submitting class="space-y-5" data-validate data-validate-messages='@json((new \App\Http\Requests\ForgotPasswordRequest)->messages())' data-validate-error-class="text-red-500 text-xs mt-1">
                 @csrf
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">Email Address <span class="text-red-500">*</span></label>
+                    <label for="email" class="block text-sm font-medium text-slate-300 mb-1.5">Email Address <span class="text-red-500">*</span></label>
                     <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
+                           class="w-full px-4 py-3 rounded-lg border border-white/10 bg-slate-950/60 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
                            placeholder="admin@example.com">
                 </div>
                 <button type="submit" data-submit-form class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] transition-all">

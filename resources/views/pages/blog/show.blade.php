@@ -20,11 +20,7 @@
             @endif
             <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-6" data-reveal="up">{{ $post->title }}</h1>
 
-            @if ($post->image)
-                <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full rounded-2xl border border-white/10 mb-8">
-            @else
-                <img src="https://picsum.photos/seed/{{ $post->slug }}/1200/675" alt="{{ $post->title }}" class="w-full rounded-2xl border border-white/10 mb-8">
-            @endif
+            <img src="{{ $post->imageUrl() ?? asset('images/default-profile.svg') }}" alt="{{ $post->title }}" class="w-full rounded-2xl border border-white/10 mb-8">
 
             <div class="prose prose-invert max-w-none text-slate-300 leading-relaxed whitespace-pre-line" id="postContent">@if (Str::contains($post->content, '</')){!! $post->content !!}@else{{ $post->content }}@endif</div>
         </article>

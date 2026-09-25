@@ -37,11 +37,9 @@
                 <div class="grid grid-cols-3 gap-5">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Avatar</label>
-                        @if ($testimonial->avatar)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $testimonial->avatar) }}" alt="{{ $testimonial->client_name }}" class="w-10 h-10 rounded-full object-cover border border-slate-200">
-                            </div>
-                        @endif
+                        <div class="mb-2">
+                            <img src="{{ $testimonial->avatarUrl() }}" alt="{{ $testimonial->client_name }}" class="w-10 h-10 rounded-full object-cover border border-slate-200">
+                        </div>
                         <input type="file" name="avatar" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
                     </div>
                     <div>
@@ -65,7 +63,7 @@
 
                 <div class="flex items-center">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', $testimonial->is_visible) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', $testimonial->is_visible) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500">
                         <span class="text-sm text-slate-700 font-medium">Visible on the website</span>
                     </label>
                 </div>

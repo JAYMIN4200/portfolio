@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@hasSection('title')@yield('title') | @endif Admin Panel</title>
-    @php $adminFavicon = App\Models\Setting::get('favicon'); @endphp
+    @php $adminFavicon = App\Models\Setting::imageUrl('favicon'); @endphp
     @if ($adminFavicon)
-        <link rel="icon" type="image/png" href="{{ asset('storage/' . $adminFavicon) }}">
+        <link rel="icon" type="image/png" href="{{ $adminFavicon }}">
     @else
         <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128272;</text></svg>">
     @endif
@@ -16,14 +16,14 @@
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
 
-    @php $adminAvatar = auth()->user()->profile?->avatar; @endphp
-    @php $adminSignature = App\Models\Setting::get('signature_image'); @endphp
+        @php $adminAvatarUrl = auth()->user()->profile?->avatarUrl(); @endphp
+    @php $adminSignature = App\Models\Setting::imageUrl('signature_image'); @endphp
 
     <div class="min-h-screen flex">
         <aside data-admin-sidebar class="admin-sidebar hidden lg:flex lg:sticky lg:top-0 lg:h-screen w-64 bg-slate-900 flex-col z-30 shrink-0">
             <div class="admin-sidebar-head flex items-center gap-3 px-6 py-5 border-b border-slate-800">
                 @if ($adminSignature)
-                    <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Panel" class="h-9 w-auto object-contain shrink-0 drop-shadow">
+                    <img src="{{ $adminSignature }}" alt="Admin Panel" class="h-9 w-auto object-contain shrink-0 drop-shadow">
                 @else
                     <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h6v16H5a1 1 0 01-1-1V5zM15 4h5v5h-5V4zM15 15h5v5h-5v-5z"/></svg>
@@ -176,13 +176,7 @@
 
                 <div class="relative" data-user-menu>
                     <button type="button" data-user-menu-toggle class="flex items-center gap-2.5 pl-2 pr-1 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">
-                        @if ($adminAvatar)
-                            <img src="{{ asset('storage/' . $adminAvatar) }}" alt="{{ auth()->user()->name }}" class="w-9 h-9 rounded-full object-cover">
-                        @else
-                            <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm uppercase">
-                                {{ substr(auth()->user()->name, 0, 1) }}
-                            </div>
-                        @endif
+                        <img src="{{ $adminAvatarUrl }}" alt="{{ auth()->user()->name }}" class="w-9 h-9 rounded-full object-cover">
                         <div class="hidden sm:block text-left">
                             <p class="text-sm font-medium text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-slate-500 leading-tight">{{ auth()->user()->email }}</p>
@@ -220,7 +214,7 @@
                     <div class="flex items-center justify-between px-6 py-5 border-b border-slate-800">
                         <div class="flex items-center gap-3">
                             @if ($adminSignature)
-                                <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Panel" class="h-8 w-auto object-contain shrink-0 drop-shadow">
+                                <img src="{{ $adminSignature }}" alt="Admin Panel" class="h-8 w-auto object-contain shrink-0 drop-shadow">
                             @else
                                 <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h6v16H5a1 1 0 01-1-1V5zM15 4h5v5h-5V4zM15 15h5v5h-5v-5z"/></svg>

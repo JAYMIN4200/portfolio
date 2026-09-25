@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasImageFallback;
 use Illuminate\Database\Eloquent\Model;
 
 class Testimonial extends Model
 {
+    use HasImageFallback;
+
     protected $fillable = [
         'client_name', 'company', 'role', 'content', 'avatar',
         'rating', 'sort_order', 'is_visible',
@@ -28,5 +31,10 @@ class Testimonial extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
+    }
+
+    public function avatarUrl(): string
+    {
+        return $this->firstExistingImageUrl([$this->avatar]);
     }
 }

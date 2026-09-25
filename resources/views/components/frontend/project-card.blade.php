@@ -1,14 +1,8 @@
 @props(['project'])
 
-<article class="glass-card rounded-xl overflow-hidden group flex flex-col h-full" data-reveal="up">
+<article class="glass-card rounded-xl overflow-hidden group flex flex-col h-full hover-run-border" data-reveal="up">
     <div class="relative overflow-hidden aspect-video">
-        @if ($project->image)
-            <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy">
-        @else
-            <div class="w-full h-full bg-gradient-to-br from-slate-800 via-slate-900 to-primary-900/50 flex items-center justify-center">
-                <svg class="w-16 h-16 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            </div>
-        @endif
+        <img src="{{ $project->imageUrl() }}" alt="{{ $project->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy">
 
         @if ($project->is_featured)
             <span class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-400 text-slate-900 shadow-lg">

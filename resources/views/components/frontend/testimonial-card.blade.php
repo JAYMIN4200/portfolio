@@ -12,13 +12,7 @@
     <blockquote class="flex-1 text-slate-400 leading-relaxed italic">"{{ $testimonial->content }}"</blockquote>
 
     <div class="flex items-center gap-3 mt-6 pt-5 border-t border-white/5">
-        @if ($testimonial->avatar)
-            <img src="{{ asset('storage/' . $testimonial->avatar) }}" alt="{{ $testimonial->client_name }}" class="w-10 h-10 rounded-full object-cover border border-white/10">
-        @else
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm uppercase">
-                {{ substr($testimonial->client_name, 0, 1) }}
-            </div>
-        @endif
+        <img src="{{ $testimonial->avatarUrl() }}" alt="{{ $testimonial->client_name }}" class="w-10 h-10 rounded-full object-cover border border-white/10">
         <div>
             <p class="text-white font-semibold text-sm">{{ $testimonial->client_name }}</p>
             <p class="text-slate-500 text-xs">

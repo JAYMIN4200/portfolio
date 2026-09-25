@@ -33,13 +33,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10" data-stagger>
             <div class="lg:col-span-2">
                 <div class="rounded-2xl overflow-hidden border border-white/10 mb-8">
-                    @if ($project->image)
-                        <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="w-full object-cover">
-                    @else
-                        <div class="w-full aspect-video bg-gradient-to-br from-slate-800 via-slate-900 to-primary-900/50 flex items-center justify-center">
-                            <svg class="w-24 h-24 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                        </div>
-                    @endif
+                    <img src="{{ $project->imageUrl() }}" alt="{{ $project->title }}" class="w-full object-cover">
                 </div>
 
                 <div class="prose prose-invert max-w-none">

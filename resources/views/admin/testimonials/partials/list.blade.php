@@ -15,11 +15,7 @@
                     <tr class="hover:bg-slate-50/50 transition-colors">
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-3">
-                                @if ($testimonial->avatar)
-                                    <img src="{{ asset('storage/' . $testimonial->avatar) }}" alt="{{ $testimonial->client_name }}" class="w-9 h-9 rounded-full object-cover">
-                                @else
-                                    <div class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold text-sm uppercase">{{ substr($testimonial->client_name, 0, 1) }}</div>
-                                @endif
+                                <img src="{{ $testimonial->avatarUrl() }}" alt="{{ $testimonial->client_name }}" class="w-9 h-9 rounded-full object-cover">
                                 <span class="font-medium text-slate-800">{{ $testimonial->client_name }}</span>
                             </div>
                         </td>
