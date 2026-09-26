@@ -1,6 +1,6 @@
 @props(['project'])
 
-<article class="glass-card rounded-xl overflow-hidden group flex flex-col h-full hover-run-border" data-reveal="up">
+<article class="glass-card rounded-xl overflow-hidden group flex flex-col h-full hover-run-border tilt-card" data-reveal="up">
     <div class="relative overflow-hidden aspect-video">
         <img src="{{ $project->imageUrl() }}" alt="{{ $project->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy">
 

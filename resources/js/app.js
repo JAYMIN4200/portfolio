@@ -59,12 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Auto-tag stagger grids so children reveal one after another
     document.querySelectorAll('[data-stagger]').forEach(function (grid) {
+        var step = parseInt(grid.getAttribute('data-stagger-step') || '110', 10);
+        var cap = parseInt(grid.getAttribute('data-stagger-cap') || '880', 10);
         Array.prototype.forEach.call(grid.children, function (child, index) {
             if (!child.hasAttribute('data-reveal')) {
-                child.setAttribute('data-reveal', 'up');
+                child.setAttribute('data-reveal', grid.getAttribute('data-stagger-reveal') || 'up');
             }
             if (!child.hasAttribute('data-reveal-delay')) {
-                child.setAttribute('data-reveal-delay', String(Math.min(index * 80, 480)));
+                child.setAttribute('data-reveal-delay', String(Math.min(index * step, cap)));
             }
         });
     });
@@ -96,12 +98,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Subtle 3D tilt on cards (fine pointers only)
     if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
         document.querySelectorAll('.tilt-card').forEach(function (card) {
+            var max = parseFloat(card.getAttribute('data-tilt')) || 9;
+
             card.addEventListener('pointermove', function (e) {
                 var rect = card.getBoundingClientRect();
                 var x = (e.clientX - rect.left) / rect.width - 0.5;
                 var y = (e.clientY - rect.top) / rect.height - 0.5;
-                card.style.transform = 'perspective(900px) rotateX(' + (-y * 5).toFixed(2) + 'deg) rotateY(' + (x * 5).toFixed(2) + 'deg) translateY(-2px)';
+                card.style.transform = 'perspective(1000px) rotateX(' + (-y * max).toFixed(2) + 'deg) rotateY(' + (x * max).toFixed(2) + 'deg) translateY(-6px) scale(1.015)';
             });
+
             card.addEventListener('pointerleave', function () {
                 card.style.transform = '';
             });
@@ -118,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Magnetic buttons pull slightly toward the cursor
         document.querySelectorAll('[data-magnetic]').forEach(function (el) {
-            var strength = parseFloat(el.getAttribute('data-magnetic')) || 0.25;
+            var strength = parseFloat(el.getAttribute('data-magnetic')) || 0.3;
 
             el.addEventListener('pointermove', function (e) {
                 var rect = el.getBoundingClientRect();

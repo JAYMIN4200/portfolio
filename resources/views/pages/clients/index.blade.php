@@ -7,6 +7,8 @@
 @section('content')
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-20">
+        <div class="pointer-events-none absolute -top-36 right-0 w-[32rem] h-[32rem] rounded-full bg-purple-500/15 blur-3xl" data-parallax="0.07" aria-hidden="true"></div>
+
         <x-frontend.section-header
             badge="Clients"
             title="People I've built for"
@@ -14,13 +16,13 @@
         />
 
         @if ($clients->isEmpty())
-            <div class="text-center py-20">
+            <div class="text-center py-20" data-reveal="up">
                 <p class="text-slate-500">No clients to show just yet. Check back soon!</p>
             </div>
         @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-stagger>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-stagger data-stagger-step="100">
                 @foreach ($clients as $client)
-                    <div class="tilt-card glass-card rounded-2xl p-6 flex flex-col">
+                    <div class="tilt-card hover-run-border glass-card rounded-2xl p-6 flex flex-col">
                         <div class="flex items-start justify-between gap-4 mb-4">
                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/25 shrink-0">
                                 {{ strtoupper(substr($client->company ?: $client->name, 0, 1)) }}

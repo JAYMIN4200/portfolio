@@ -9,12 +9,15 @@ use App\Models\Project;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Support\Media;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ImageFallbackTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();

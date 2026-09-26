@@ -1,6 +1,6 @@
 @props(['service'])
 
-<div class="glass-card rounded-xl p-6 h-full" data-reveal="up">
+<div class="glass-card rounded-xl p-6 h-full tilt-card spotlight-card" data-reveal="up">
     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 mb-4">
         @if ($service->icon)
             <img src="{{ $service->icon }}" alt="{{ $service->title }}" class="w-6 h-6 object-contain">

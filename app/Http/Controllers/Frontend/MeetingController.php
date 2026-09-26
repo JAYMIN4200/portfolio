@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MeetingRequest;
+use App\Mail\MeetingAcknowledgement;
 use App\Mail\MeetingRequested;
 use App\Models\Meeting;
-use App\Models\Setting;
-use App\Models\User;
-use Illuminate\Support\Facades\Mail;
+use App\Support\NotificationMailer;
 
 class MeetingController extends Controller
 {
@@ -33,20 +32,29 @@ class MeetingController extends Controller
             'source' => 'public',
         ]);
 
-        try {
-            $recipient = Setting::get('contact_email', User::query()->where('is_admin', true)->value('email'));
-
-            if ($recipient) {
-                Mail::to($recipient)->send(new MeetingRequested($meeting));
-            }
-        } catch (\Throwable $e) {
-            report($e);
-        }
+        $this->sendNotificationEmails($meeting);
 
         if ($request->expectsJson()) {
             return response()->json(['success' => true, 'message' => 'Meeting request received! I will confirm the schedule shortly.']);
         }
 
         return redirect()->route('meetings.book')->with('success', 'Meeting request received! I will confirm the schedule shortly.');
+    }
+
+    /**
+     * Notify the owner of the new booking and send the visitor a thank-you.
+     * Delivery problems are logged by the mailer, never surfaced to the
+     * visitor, because the request is already saved either way.
+     */
+    private function sendNotificationEmails(Meeting $meeting): void
+    {
+        $mailer = app(NotificationMailer::class);
+
+        $mailer->toOwner(new MeetingRequested($meeting), 'meeting.owner_notification');
+        $mailer->toSender(
+            new MeetingAcknowledgement($meeting, $mailer->ownerAddress() ?? config('mail.from.address')),
+            'meeting.acknowledgement',
+            $meeting->email,
+        );
     }
 }

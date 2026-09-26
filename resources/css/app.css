@@ -344,25 +344,53 @@ input[type='radio'] {
 
 /* ============ Animation engine ============ */
 
+:root {
+    /* Reveal travel distance and spring-ish easing. Tuned to read as a firm
+     * pull rather than a gentle fade, without feeling sluggish. */
+    --reveal-up: 60px;
+    --reveal-side: 78px;
+    --reveal-duration: 620ms;
+    --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Reveal on scroll */
 [data-reveal] {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transform: translateY(var(--reveal-up));
+    transition:
+        opacity var(--reveal-duration) var(--reveal-ease),
+        transform var(--reveal-duration) var(--reveal-ease),
+        filter var(--reveal-duration) var(--reveal-ease);
     will-change: opacity, transform;
 }
 
-[data-reveal='left'] { transform: translateX(-36px); }
+[data-reveal='up'] { transform: translateY(var(--reveal-up)); }
 
-[data-reveal='right'] { transform: translateX(36px); }
+[data-reveal='down'] { transform: translateY(calc(var(--reveal-up) * -1)); }
 
-[data-reveal='zoom'] { transform: scale(0.92); }
+[data-reveal='left'] { transform: translateX(calc(var(--reveal-side) * -1)); }
 
-[data-reveal='up'] { transform: translateY(28px); }
+[data-reveal='right'] { transform: translateX(var(--reveal-side)); }
+
+[data-reveal='zoom'] { transform: scale(0.86); }
+
+/* Hinges up from its own top edge, so headings feel like they swing in. */
+[data-reveal='flip'] {
+    transform: perspective(900px) rotateX(-16deg) translateY(var(--reveal-up));
+    transform-origin: top center;
+}
+
+/* Soft focus pull — pairs well with image and quote blocks. */
+[data-reveal='blur'] {
+    transform: translateY(calc(var(--reveal-up) * 0.55));
+    filter: blur(12px);
+    will-change: opacity, transform, filter;
+}
 
 [data-reveal].is-revealed {
     opacity: 1;
     transform: none;
+    filter: none;
 }
 
 /* Animated gradient text */
@@ -716,6 +744,7 @@ input[type='radio'] {
     [data-reveal] {
         opacity: 1 !important;
         transform: none !important;
+        filter: none !important;
         transition: none !important;
     }
 

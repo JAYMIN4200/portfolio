@@ -115,8 +115,7 @@
                                 <label for="phone" class="block text-sm font-medium text-slate-300 mb-2">Phone</label>
                                 <input type="text" id="phone" name="phone" value="{{ old('phone') }}" inputmode="tel"
                                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('phone') border-red-400/60 @enderror"
-                                       placeholder="e.g. +91 98765 43210 or +1 (315) 322 5888">
-                                <p class="mt-1 text-xs text-slate-500">Indian & international numbers — spaces, brackets and dashes are stripped automatically.</p>
+                                       placeholder="Phone number">
                                 @error('phone')
                                     <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
                                 @enderror
@@ -220,9 +219,10 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] transition-all">
+                        <button type="submit" data-meeting-submit class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-indigo-500/30">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            Request Meeting
+                            <span data-meeting-submit-text>Request Meeting</span>
+                            <svg class="w-5 h-5 hidden animate-spin" data-meeting-spinner fill="none" viewBox="0 0 24 24"><path class="opacity-30" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </button>
                         <p class="mt-3 text-center text-xs text-slate-500">I'll get back to you within 24 hours to confirm the meeting.</p>
                     </div>
@@ -236,6 +236,42 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            var submitBtn = document.querySelector('[data-meeting-submit]');
+            if (submitBtn) {
+                var form = submitBtn.closest('form');
+                var submitText = form.querySelector('[data-meeting-submit-text]');
+                var spinner = form.querySelector('[data-meeting-spinner]');
+                var idleLabel = submitText ? submitText.textContent : '';
+                var submitting = false;
+
+                var resetSubmit = function () {
+                    submitting = false;
+                    submitBtn.disabled = false;
+                    if (submitText) submitText.textContent = idleLabel;
+                    if (spinner) spinner.classList.add('hidden');
+                };
+
+                form.addEventListener('submit', function (event) {
+                    if (submitting) {
+                        event.preventDefault();
+                        return;
+                    }
+                    if (!form.checkValidity()) {
+                        return;
+                    }
+                    submitting = true;
+                    submitBtn.disabled = true;
+                    if (submitText) submitText.textContent = 'Sending...';
+                    if (spinner) spinner.classList.remove('hidden');
+                });
+
+                window.addEventListener('pageshow', function (event) {
+                    if (event.persisted) {
+                        resetSubmit();
+                    }
+                });
+            }
+
             var topic = document.getElementById('topic');
             var otherWrap = document.getElementById('topic-other-wrap');
             var otherInput = document.getElementById('topic_other');

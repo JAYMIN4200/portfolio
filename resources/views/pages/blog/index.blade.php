@@ -11,6 +11,8 @@
 @section('content')
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+        <div class="pointer-events-none absolute -top-32 left-1/3 w-[30rem] h-[30rem] rounded-full bg-indigo-500/15 blur-3xl" data-parallax="0.06" aria-hidden="true"></div>
+
         <x-frontend.section-header
             badge="Blog"
             title="Articles & insights"
@@ -18,16 +20,16 @@
         />
 
         @if ($posts->isEmpty())
-            <div class="text-center py-20">
+            <div class="text-center py-20" data-reveal="up">
                 <p class="text-slate-500">No articles published yet. Check back soon!</p>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-stagger>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-stagger data-stagger-step="100">
                 @foreach ($posts as $post)
-                    <a href="{{ route('blog.show', $post->slug) }}" class="glass-card rounded-2xl overflow-hidden transition-all hover:border-primary-500/40 hover:-translate-y-1 hover:bg-white/5">
+                    <a href="{{ route('blog.show', $post->slug) }}" class="group glass-card rounded-2xl overflow-hidden transition-all hover:border-primary-500/40 hover:-translate-y-1 hover:bg-white/5 tilt-card">
                         <div class="aspect-video overflow-hidden">
                             @if ($postImageUrl = $post->imageUrl())
-                                <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                                <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                             @else
                                 <img src="{{ asset('images/default-profile.svg') }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
                             @endif
