@@ -243,3 +243,172 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+/**
+ * Session Timeout Warning
+ * Shows a warning modal before auto-logout and allows user to extend session
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    // Check if user is authenticated (presence of logout form or user menu)
+    var logoutForm = document.querySelector('form[action*="logout"]');
+    var userMenu = document.querySelector('[data-user-menu]');
+
+    if (!logoutForm && !userMenu) {
+        return; // Not on an authenticated page
+    }
+
+    // Get session lifetime from a meta tag or data attribute
+    var sessionLifetimeMeta = document.querySelector('meta[name="session-lifetime"]');
+    var sessionLifetime = sessionLifetimeMeta ? parseInt(sessionLifetimeMeta.getAttribute('content'), 10) : 120;
+
+    // If 0 or invalid, auto-logout is disabled
+    if (!sessionLifetime || sessionLifetime <= 0 || isNaN(sessionLifetime)) {
+        return;
+    }
+
+    // Ensure minimum session lifetime for warning calculation
+    if (sessionLifetime < 1) {
+        return;
+    }
+
+    // Show warning 30 seconds before expiry, max 5 minutes, min 10 seconds
+    // For sessions < 2 minutes, don't show warning (just auto-logout)
+    var warningTime;
+    if (sessionLifetime <= 2) {
+        warningTime = 0; // No warning for very short sessions
+    } else {
+        warningTime = Math.min(5, Math.max(0.5, sessionLifetime - 0.5)); // 30 sec before, max 5 min
+    }
+    var warningMs = warningTime * 60 * 1000;
+    var totalMs = sessionLifetime * 60 * 1000;
+
+    var warningShown = false;
+    var warningTimer = null;
+    var logoutTimer = null;
+
+    var activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+    function doLogout() {
+        // Create a form and submit it to logout via POST
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/logout';
+        form.style.display = 'none';
+
+        var csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        form.appendChild(csrfInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function resetTimers() {
+        if (warningTimer) clearTimeout(warningTimer);
+        if (logoutTimer) clearTimeout(logoutTimer);
+        warningShown = false;
+        startTimers();
+    }
+
+    function startTimers() {
+        if (warningTime > 0) {
+            warningTimer = setTimeout(showWarning, totalMs - warningMs);
+        }
+        logoutTimer = setTimeout(function () {
+            // POST to logout
+            doLogout();
+        }, totalMs);
+    }
+
+    function showWarning() {
+        if (warningShown) return;
+        warningShown = true;
+
+        // Create modal
+        var modal = document.createElement('div');
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/50';
+        
+        // Format initial warning time display
+        var initialDisplay = warningTime < 1 
+            ? (warningTime * 60) + ' second(s)' 
+            : warningTime + ' minute(s)';
+        
+        modal.innerHTML = `
+            <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <svg class="w-6 h-6 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <h3 class="text-lg font-semibold text-slate-800">Session Expiring Soon</h3>
+                </div>
+                <p class="text-slate-600 mb-6">Your session will expire in <strong id="countdown" class="text-amber-600">${initialDisplay}</strong> due to inactivity.</p>
+                <div class="flex gap-3 justify-end">
+                    <button id="extend-session" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors">Stay Logged In</button>
+                    <button id="logout-now" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-colors">Log Out Now</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Countdown
+        var countdownEl = modal.querySelector('#countdown');
+        var secondsLeft = warningTime * 60;
+        var countdownInterval = setInterval(function () {
+            secondsLeft--;
+            var mins = Math.floor(secondsLeft / 60);
+            var secs = secondsLeft % 60;
+            if (countdownEl) {
+                countdownEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+            }
+            if (secondsLeft <= 0) {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
+
+        // Extend session
+        modal.querySelector('#extend-session').addEventListener('click', function () {
+            clearInterval(countdownInterval);
+            document.body.removeChild(modal);
+            extendSession();
+        });
+
+        // Logout now
+        modal.querySelector('#logout-now').addEventListener('click', function () {
+            doLogout();
+        });
+
+        // Close on backdrop click
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                clearInterval(countdownInterval);
+                document.body.removeChild(modal);
+                // User didn't respond, let logout happen
+            }
+        });
+    }
+
+    function extendSession() {
+        // Make a request to keep session alive
+        fetch('/session/extend', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            },
+            credentials: 'same-origin'
+        }).then(function () {
+            resetTimers();
+        }).catch(function () {
+            // If extend fails, restart timers anyway
+            resetTimers();
+        });
+    }
+
+    // Track user activity
+    activityEvents.forEach(function (event) {
+        document.addEventListener(event, resetTimers, { passive: true });
+    });
+
+    // Start timers
+    startTimers();
+});

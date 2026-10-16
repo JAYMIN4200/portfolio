@@ -31,7 +31,7 @@
 
         <div class="bg-slate-900/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-indigo-950/40 border border-white/10 p-8">
             @if ($errors->any())
-                <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                <div data-alert class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
                     @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
                     @endforeach
@@ -102,6 +102,15 @@
                     if (label) label.textContent = 'Submitting...';
                     if (spinner) spinner.classList.remove('hidden');
                 });
+            });
+
+            document.querySelectorAll('[data-alert]').forEach(el => {
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(-4px)';
+                    setTimeout(() => el.remove(), 400);
+                }, 3000);
             });
         });
     </script>

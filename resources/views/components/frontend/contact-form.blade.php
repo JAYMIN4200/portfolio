@@ -109,15 +109,17 @@
             </div>
             <div>
                 <label for="subject" class="block text-sm font-medium text-slate-300 mb-2">Subject <span class="text-red-400">*</span></label>
-                <select id="subject" name="subject" required data-subject-select
-                        data-validate-error-slot='[data-field-error="subject"]'
-                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all appearance-none @error('subject') border-red-400/60 @enderror">
-                    <option value="" disabled selected>Select an enquiry type...</option>
-                    @foreach ($topics as $topic)
-                        <option value="{{ $topic }}" {{ old('subject') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
-                    @endforeach
-                    <option value="Other" {{ old('subject') === 'Other' ? 'selected' : '' }}>Other</option>
-                </select>
+                <div class="relative">
+                    <select id="subject" name="subject" required data-subject-select
+                            data-validate-error-slot='[data-field-error="subject"]'
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('subject') border-red-400/60 @enderror">
+                        <option value="" disabled selected>Select an enquiry type...</option>
+                        @foreach ($topics as $topic)
+                            <option value="{{ $topic }}" {{ old('subject') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
+                        @endforeach
+                        <option value="Other" {{ old('subject') === 'Other' ? 'selected' : '' }}>Other</option>
+                    </select>
+                </div>
                 @error('subject')
                     <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
                 @else

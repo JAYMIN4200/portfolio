@@ -2,24 +2,26 @@
 
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MeetingController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Frontend\AboutController;
-use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\ClientController as FrontendClientController;
+use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\FaqController as FrontendFaqController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\MeetingController as FrontendMeetingController;
@@ -71,6 +73,10 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
+Route::post('/session/extend', function () {
+    return response()->json(['status' => 'ok']);
+})->middleware('auth')->name('session.extend');
+
 /*
 |--------------------------------------------------------------------------
 | Admin Panel Routes
@@ -83,6 +89,8 @@ Route::prefix('admin')
     ->group(function () {
 
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/calendar', [DashboardController::class, 'calendar'])->name('dashboard.calendar');
+        Route::get('/dashboard/financials', [DashboardController::class, 'financials'])->name('dashboard.financials');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -90,8 +98,13 @@ Route::prefix('admin')
         Route::resource('skills', SkillController::class);
         Route::resource('experiences', ExperienceController::class);
         Route::resource('expenses', ExpenseController::class)->except(['show']);
+        Route::resource('payments', PaymentController::class)->except(['show']);
         Route::resource('meetings', MeetingController::class);
         Route::resource('clients', ClientController::class)->except(['show']);
+
+        Route::get('tasks/calendar', [TaskController::class, 'calendar'])->name('tasks.calendar');
+        Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status');
+        Route::resource('tasks', TaskController::class)->except(['show']);
         Route::resource('projects', App\Http\Controllers\Admin\ProjectController::class);
         Route::patch('/projects/{project}/featured', [App\Http\Controllers\Admin\ProjectController::class, 'toggleFeatured'])->name('projects.toggle-featured');
         Route::resource('services', ServiceController::class);

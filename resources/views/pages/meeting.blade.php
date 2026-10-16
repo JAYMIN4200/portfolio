@@ -154,15 +154,17 @@
                                 <div class="grid grid-cols-2 gap-3">
                                     <input type="time" id="meeting_time" name="meeting_time" value="{{ old('meeting_time') }}" required
                                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('meeting_time') border-red-400/60 @enderror">
-                                    <select id="duration" name="duration"
-                                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('duration') border-red-400/60 @enderror">
-                                        <option value="" disabled @selected(!old('duration'))>Minutes</option>
-                                        <option value="15" @selected(old('duration') == 15)>15 min</option>
-                                        <option value="30" @selected(old('duration') == 30)>30 min</option>
-                                        <option value="45" @selected(old('duration') == 45)>45 min</option>
-                                        <option value="60" @selected(old('duration') == 60)>60 min</option>
-                                        <option value="90" @selected(old('duration') == 90)>90 min</option>
-                                    </select>
+                                    <div class="relative">
+                                        <select id="duration" name="duration"
+                                                class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('duration') border-red-400/60 @enderror">
+                                            <option value="" disabled @selected(!old('duration'))>Minutes</option>
+                                            <option value="15" @selected(old('duration') == 15)>15 min</option>
+                                            <option value="30" @selected(old('duration') == 30)>30 min</option>
+                                            <option value="45" @selected(old('duration') == 45)>45 min</option>
+                                            <option value="60" @selected(old('duration') == 60)>60 min</option>
+                                            <option value="90" @selected(old('duration') == 90)>90 min</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 @error('meeting_time')
                                     <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
@@ -184,14 +186,13 @@
                                 <label for="topic" class="block text-sm font-medium text-slate-300 mb-2">Topic</label>
                                 <div class="relative">
                                     <select id="topic" name="topic"
-                                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white pr-11 appearance-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('topic') border-red-400/60 @enderror">
+                                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('topic') border-red-400/60 @enderror">
                                         <option value="" disabled selected @selected(!$selectedTopic)>Select a topic…</option>
                                         @foreach ($meeting::TOPICS as $topic)
                                             <option value="{{ $topic }}" @selected($selectedTopic === $topic)>{{ $topic }}</option>
                                         @endforeach
                                         <option value="{{ $meeting::TOPIC_OTHER }}" @selected($selectedTopic === $meeting::TOPIC_OTHER)>Other…</option>
                                     </select>
-                                    <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                 </div>
                                 @error('topic')
                                     <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>

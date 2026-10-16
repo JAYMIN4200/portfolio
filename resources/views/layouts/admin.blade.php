@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="session-lifetime" content="{{ \App\Models\Setting::get('session_lifetime', 120) }}">
     <title>@hasSection('title')@yield('title') | @endif Admin Panel</title>
     @php $adminFavicon = App\Models\Setting::imageUrl('favicon'); @endphp
     @if ($adminFavicon)
@@ -18,6 +19,88 @@
 
         @php $adminAvatarUrl = auth()->user()->profile?->avatarUrl(); @endphp
     @php $adminSignature = App\Models\Setting::imageUrl('signature_image'); @endphp
+    @php
+        $unread = App\Models\Message::unread()->count();
+        $pendingMeetings = App\Models\Meeting::pending()->count();
+
+        $navGroups = [
+            [
+                'label' => 'Dashboard',
+                'items' => [
+                    ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7V5a1 1 0 011 1v13a1 1 0 01-1 1H4a1 1 0 01-1-1v-7z'],
+                ],
+            ],
+            [
+                'label' => 'Content',
+                'icon' => 'M4 6h16M4 12h16M4 18h16',
+                'items' => [
+                    ['label' => 'Skills', 'route' => 'admin.skills.index', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
+                    ['label' => 'Experience', 'route' => 'admin.experiences.index', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+                    ['label' => 'Projects', 'route' => 'admin.projects.index', 'icon' => 'M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z'],
+                    ['label' => 'Services', 'route' => 'admin.services.index', 'icon' => 'M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z'],
+                    ['label' => 'Testimonials', 'route' => 'admin.testimonials.index', 'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'],
+                ],
+            ],
+            [
+                'label' => 'Pages',
+                'icon' => 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z',
+                'items' => [
+                    ['label' => 'Blog Posts', 'route' => 'admin.posts.index', 'icon' => 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zm4-14v6m0 0l-2-2m2 2l2-2'],
+                    ['label' => 'FAQ', 'route' => 'admin.faqs.index', 'icon' => 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
+                    ['label' => 'Pages', 'route' => 'admin.pages.index', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
+                ],
+            ],
+            [
+                'label' => 'Business',
+                'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+                'items' => [
+                    ['label' => 'Clients', 'route' => 'admin.clients.index', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
+                    ['label' => 'Meetings', 'route' => 'admin.meetings.index', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                    ['label' => 'Tasks', 'route' => 'admin.tasks.index', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
+                    ['label' => 'Payments', 'route' => 'admin.payments.index', 'icon' => 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'],
+                    ['label' => 'Expenses', 'route' => 'admin.expenses.index', 'icon' => 'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6'],
+                ],
+            ],
+            [
+                'label' => 'Communication',
+                'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+                'items' => [
+                    ['label' => 'Messages', 'route' => 'admin.messages.index', 'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'],
+                    ['label' => 'Newsletter', 'route' => 'admin.newsletter.index', 'icon' => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'],
+                ],
+            ],
+            [
+                'label' => 'Settings',
+                'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
+                'items' => [
+                    ['label' => 'Website', 'route' => 'admin.settings.index', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
+                    ['label' => 'Profile', 'route' => 'admin.profile.edit', 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
+                ],
+            ],
+        ];
+
+        $routeName = request()->route()?->getName() ?? '';
+        $itemMatches = function (array $item) use ($routeName) {
+            $bases = $item['matchers'] ?? [];
+            $derived = preg_replace('/\.[^.]+$/', '', $item['route']);
+            if (str_contains($derived, '.')) {
+                $bases[] = $derived;
+            }
+            $bases[] = $item['route'];
+
+            return collect($bases)->contains(function ($base) use ($routeName) {
+                return $base !== '' && ($routeName === $base || str_starts_with($routeName, $base.'.'));
+            });
+        };
+
+        $activeGroup = null;
+        foreach ($navGroups as $group) {
+            if (count($group['items']) > 1 && collect($group['items'])->contains($itemMatches)) {
+                $activeGroup = $group;
+                break;
+            }
+        }
+    @endphp
 
     <div class="min-h-screen flex">
         <aside data-admin-sidebar class="admin-sidebar hidden lg:flex lg:sticky lg:top-0 lg:h-screen w-64 bg-slate-900 flex-col z-30 shrink-0">
@@ -35,100 +118,17 @@
                 </div>
             </div>
 
+            <div class="admin-sidebar-search px-3 pt-4">
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+                    <input type="text" id="sidebarSearch" autocomplete="off" placeholder="Search modules"
+                        class="w-full rounded-lg border border-slate-700 bg-slate-800/60 py-2 pl-9 pr-3 text-sm text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <ul id="sidebarSearchResults" class="hidden absolute left-0 right-0 z-50 mt-2 max-h-80 overflow-y-auto rounded-xl border border-slate-700 bg-slate-800 p-1 shadow-xl"></ul>
+                </div>
+            </div>
+
             <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-                <a href="{{ route('admin.dashboard') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7V5a1 1 0 011 1v13a1 1 0 01-1 1H4a1 1 0 01-1-1v-7z"/></svg>
-                    <span class="admin-link-label">Dashboard</span>
-                </a>
-                <a href="{{ route('admin.profile.edit') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    <span class="admin-link-label">Profile</span>
-                </a>
-                @php $unread = App\Models\Message::unread()->count(); @endphp
-                <a href="{{ route('admin.messages.index') }}" class="aside-link flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.messages.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <span class="flex items-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                        <span class="admin-link-label">Messages</span>
-                    </span>
-                    @if ($unread > 0)
-                        <span class="admin-badge inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-red-500 text-white">{{ $unread }}</span>
-                    @endif
-                </a>
-                <a href="{{ route('admin.newsletter.index') }}" class="aside-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.newsletter.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span class="admin-link-label">Newsletter</span>
-                </a>
-
-                @php $contentGroupActive = request()->routeIs('admin.skills.*') || request()->routeIs('admin.experiences.*') || request()->routeIs('admin.projects.*') || request()->routeIs('admin.services.*') || request()->routeIs('admin.testimonials.*'); @endphp
-                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="content" data-open="{{ $contentGroupActive ? 1 : 0 }}">
-                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $contentGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                        <span class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                            <span class="admin-link-label">Content</span>
-                        </span>
-                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div class="admin-nav-submenu space-y-1 mt-1">
-                        <a href="{{ route('admin.skills.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.skills.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Skills</a>
-                        <a href="{{ route('admin.experiences.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.experiences.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>Experience</a>
-                        <a href="{{ route('admin.projects.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>Projects</a>
-                        <a href="{{ route('admin.services.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>Services</a>
-                        <a href="{{ route('admin.testimonials.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.testimonials.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Testimonials</a>
-                    </div>
-                </div>
-
-                @php $pagesGroupActive = request()->routeIs('admin.posts.*') || request()->routeIs('admin.faqs.*') || request()->routeIs('admin.pages.*'); @endphp
-                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="pages" data-open="{{ $pagesGroupActive ? 1 : 0 }}">
-                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $pagesGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                        <span class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                            <span class="admin-link-label">Pages</span>
-                        </span>
-                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div class="admin-nav-submenu space-y-1 mt-1">
-                        <a href="{{ route('admin.posts.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.posts.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zm4-14v6m0 0l-2-2m2 2l2-2"/></svg>Blog Posts</a>
-                        <a href="{{ route('admin.faqs.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.faqs.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>FAQ</a>
-                        <a href="{{ route('admin.pages.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.pages.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Pages</a>
-                    </div>
-                </div>
-
-                @php $pendingMeetings = App\Models\Meeting::pending()->count(); @endphp
-                @php $businessGroupActive = request()->routeIs('admin.clients.*') || request()->routeIs('admin.meetings.*') || request()->routeIs('admin.expenses.*'); @endphp
-                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="business" data-open="{{ $businessGroupActive ? 1 : 0 }}">
-                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $businessGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                        <span class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <span class="admin-link-label">Business</span>
-                        </span>
-                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div class="admin-nav-submenu space-y-1 mt-1">
-                        <a href="{{ route('admin.clients.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.clients.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Clients</a>
-                        <a href="{{ route('admin.meetings.index') }}" class="admin-sub-link aside-link flex items-center justify-between gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.meetings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                            <span class="flex items-center gap-3"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Meetings</span></span>
-                            @if ($pendingMeetings > 0)
-                                <span class="admin-badge inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-amber-500 text-slate-900">{{ $pendingMeetings }}</span>
-                            @endif
-                        </a>
-                        <a href="{{ route('admin.expenses.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.expenses.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Expenses</a>
-                    </div>
-                </div>
-
-                @php $configGroupActive = request()->routeIs('admin.settings.*'); @endphp
-                <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="configuration" data-open="{{ $configGroupActive ? 1 : 0 }}">
-                    <button type="button" class="admin-nav-toggle aside-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ $configGroupActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800 transition-colors' }}">
-                        <span class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span class="admin-link-label">Configuration</span>
-                        </span>
-                        <svg class="admin-nav-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div class="admin-nav-submenu space-y-1 mt-1">
-                        <a href="{{ route('admin.settings.index') }}" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800 transition-colors' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a>
-                        <a href="{{ route('home') }}" target="_blank" class="admin-sub-link aside-link flex items-center gap-3 pl-11 pr-4 py-2 rounded-lg text-sm text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>View Website</a>
-                    </div>
-                </div>
+                <x-admin.nav :groups="$navGroups" />
             </nav>
 
             <div class="border-t border-slate-800 p-3">
@@ -186,10 +186,6 @@
 
                     <div data-user-menu-dropdown class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl border border-slate-200 shadow-lg py-1.5">
                         <p class="px-4 py-2 text-sm text-slate-600 sm:hidden">{{ auth()->user()->name }} · {{ auth()->user()->email }}</p>
-                        <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            My Profile
-                        </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
@@ -227,68 +223,7 @@
                         </button>
                     </div>
                     <nav class="py-4 px-3 space-y-1 flex-1">
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Dashboard</a>
-                        <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Profile</a>
-                        <a href="{{ route('admin.messages.index') }}" class="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.messages.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Messages</a>
-                        <a href="{{ route('admin.newsletter.index') }}" class="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.newsletter.*') ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">Newsletter</a>
-
-                        @php $contentGroupActiveM = request()->routeIs('admin.skills.*') || request()->routeIs('admin.experiences.*') || request()->routeIs('admin.projects.*') || request()->routeIs('admin.services.*') || request()->routeIs('admin.testimonials.*'); @endphp
-                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-content" data-open="{{ $contentGroupActiveM ? 1 : 0 }}">
-                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $contentGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span>Content</span>
-                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div class="admin-nav-submenu space-y-1 mt-1">
-                                <a href="{{ route('admin.skills.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.skills.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Skills</a>
-                                <a href="{{ route('admin.experiences.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.experiences.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>Experience</a>
-                                <a href="{{ route('admin.projects.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>Projects</a>
-                                <a href="{{ route('admin.services.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.services.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>Services</a>
-                                <a href="{{ route('admin.testimonials.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.testimonials.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Testimonials</a>
-                            </div>
-                        </div>
-
-                        @php $pagesGroupActiveM = request()->routeIs('admin.posts.*') || request()->routeIs('admin.faqs.*') || request()->routeIs('admin.pages.*'); @endphp
-                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-pages" data-open="{{ $pagesGroupActiveM ? 1 : 0 }}">
-                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $pagesGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span>Pages</span>
-                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div class="admin-nav-submenu space-y-1 mt-1">
-                                <a href="{{ route('admin.posts.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.posts.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2zm4-14v6m0 0l-2-2m2 2l2-2"/></svg>Blog Posts</a>
-                                <a href="{{ route('admin.faqs.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.faqs.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>FAQ</a>
-                                <a href="{{ route('admin.pages.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.pages.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Pages</a>
-                            </div>
-                        </div>
-
-                        @php $businessGroupActiveM = request()->routeIs('admin.clients.*') || request()->routeIs('admin.meetings.*') || request()->routeIs('admin.expenses.*'); @endphp
-                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-business" data-open="{{ $businessGroupActiveM ? 1 : 0 }}">
-                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $businessGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span>Business</span>
-                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div class="admin-nav-submenu space-y-1 mt-1">
-                                <a href="{{ route('admin.clients.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.clients.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Clients</a>
-                                <a href="{{ route('admin.meetings.index') }}" class="admin-sub-link flex items-center justify-between pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.meetings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}">
-                                    <span class="flex items-center gap-3"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Meetings</span></span>
-                                    @if ($pendingMeetings > 0)
-                                        <span class="admin-badge inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs font-bold bg-amber-500 text-slate-900">{{ $pendingMeetings }}</span>
-                                    @endif
-                                </a>
-                                <a href="{{ route('admin.expenses.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.expenses.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Expenses</a>
-                            </div>
-                        </div>
-
-                        @php $settingsGroupActiveM = request()->routeIs('admin.settings.*'); @endphp
-                        <div class="admin-nav-group" data-admin-nav-group data-admin-nav-id="m-configuration" data-open="{{ $settingsGroupActiveM ? 1 : 0 }}">
-                            <button type="button" class="admin-nav-toggle w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium {{ $settingsGroupActiveM ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span>Configuration</span>
-                                <svg class="admin-nav-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div class="admin-nav-submenu space-y-1 mt-1">
-                                <a href="{{ route('admin.settings.index') }}" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white hover:bg-slate-800' }}"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a>
-                                <a href="{{ route('home') }}" target="_blank" class="admin-sub-link flex items-center gap-3 pl-6 pr-4 py-2 rounded-lg text-sm text-slate-500 hover:text-white hover:bg-slate-800"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>View Website</a>
-                            </div>
-                        </div>
+                        <x-admin.nav :groups="$navGroups" mobile />
                     </nav>
                     <div class="border-t border-slate-800 p-3">
                         <form method="POST" action="{{ route('logout') }}" data-confirm="Are you sure you want to logout?" data-confirm-button="Yes, Logout">
@@ -313,6 +248,10 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>
+                @endif
+
+                @if ($activeGroup)
+                    <x-admin.section-switch :tabs="$activeGroup['items']" :title="$activeGroup['label']" />
                 @endif
 
                 @yield('content')
@@ -559,6 +498,115 @@ content.classList.remove('opacity-50', 'pointer-events-none');
                     }).catch(() => form.submit());
                 });
             });
+
+            // Sidebar module search: index is built from the rendered nav + section switch.
+            const searchInput = document.getElementById('sidebarSearch');
+            const searchResults = document.getElementById('sidebarSearchResults');
+            if (searchInput && searchResults) {
+                const escapeHtml = (value) => String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+
+                const buildSearchIndex = () => {
+                    const items = [];
+                    document.querySelectorAll('.admin-sidebar nav a.aside-link[href]').forEach(a => {
+                        const labelEl = a.querySelector('.admin-link-label');
+                        const label = (labelEl ? labelEl.textContent : a.textContent || '').replace(/\s+/g, ' ').trim();
+                        if (!label) return;
+                        items.push({ label, group: (a.dataset.sidebarGroupLabel || '').trim(), url: a.getAttribute('href') || '#' });
+                    });
+                    document.querySelectorAll('#sidebarModuleExtra a[href]').forEach(a => {
+                        const label = (a.textContent || '').replace(/\s+/g, ' ').trim();
+                        if (!label) return;
+                        items.push({ label, group: (a.dataset.sidebarGroupLabel || '').trim(), url: a.getAttribute('href') || '#' });
+                    });
+                    document.querySelectorAll('.section-switch a.section-switch-item[href]').forEach(a => {
+                        const span = a.querySelector('span');
+                        const label = (span ? span.textContent : a.textContent || '').replace(/\s+/g, ' ').trim();
+                        if (!label) return;
+                        const titleEl = a.closest('.section-switch')?.querySelector('.section-switch-title');
+                        items.push({ label, group: titleEl ? titleEl.textContent.trim() : '', url: a.getAttribute('href') || '#' });
+                    });
+
+                    const byUrl = {};
+                    const unique = [];
+                    items.forEach(item => {
+                        if (!item.url || item.url === '#') return;
+                        const known = byUrl[item.url];
+                        if (known) {
+                            if (item.label && item.label.toLowerCase() !== known.label.toLowerCase()) known.aliases.push(item.label);
+                            if (!known.group && item.group) known.group = item.group;
+                            return;
+                        }
+                        item.aliases = [];
+                        byUrl[item.url] = item;
+                        unique.push(item);
+                    });
+                    return unique;
+                };
+
+                const highlight = (text, query) => {
+                    if (!query) return escapeHtml(text);
+                    const index = text.toLowerCase().indexOf(query.toLowerCase());
+                    if (index === -1) return escapeHtml(text);
+                    return escapeHtml(text.slice(0, index)) +
+                        '<span class="text-indigo-400 font-semibold">' + escapeHtml(text.slice(index, index + query.length)) + '</span>' +
+                        escapeHtml(text.slice(index + query.length));
+                };
+
+                const menuIndex = buildSearchIndex();
+
+                const renderSearchResults = (query) => {
+                    query = (query || '').trim();
+                    if (!query) {
+                        searchResults.innerHTML = '';
+                        searchResults.classList.add('hidden');
+                        return;
+                    }
+                    const lower = query.toLowerCase();
+                    const matches = menuIndex.filter(item =>
+                        item.label.toLowerCase().includes(lower) ||
+                        item.group.toLowerCase().includes(lower) ||
+                        (item.aliases || []).some(alias => alias.toLowerCase().includes(lower))
+                    ).slice(0, 20);
+
+                    if (!matches.length) {
+                        searchResults.innerHTML = '<li class="px-3 py-2 text-sm text-slate-400">No module matches "' + escapeHtml(query) + '"</li>';
+                        searchResults.classList.remove('hidden');
+                        return;
+                    }
+
+                    searchResults.innerHTML = matches.map(item =>
+                        '<li><a href="' + escapeHtml(item.url) + '" class="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">' +
+                        '<span class="min-w-0 truncate">' + highlight(item.label, query) + '</span>' +
+                        (item.group ? '<span class="shrink-0 text-[11px] text-slate-500">' + escapeHtml(item.group) + '</span>' : '') +
+                        '</a></li>'
+                    ).join('');
+                    searchResults.classList.remove('hidden');
+                };
+
+                searchInput.addEventListener('input', () => renderSearchResults(searchInput.value));
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        renderSearchResults('');
+                        searchInput.blur();
+                    }
+                    if (e.key === 'Enter') {
+                        const first = searchResults.querySelector('a');
+                        if (first) first.click();
+                    }
+                });
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('#sidebarSearchResults a')) {
+                        searchResults.classList.add('hidden');
+                        return;
+                    }
+                    if (!e.target.closest('.admin-sidebar-search')) searchResults.classList.add('hidden');
+                });
+            }
         });
     </script>
 

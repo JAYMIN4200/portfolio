@@ -18,6 +18,7 @@ class SettingRequest extends FormRequest
             'settings.*' => ['nullable', 'string', 'max:2000'],
             'settings.signature_image' => ['nullable', 'image', 'max:2048'],
             'settings.favicon' => ['nullable', 'image', 'max:2048'],
+            'settings.session_lifetime' => ['nullable', 'integer', 'min:0', 'max:10080'],
         ];
     }
 }

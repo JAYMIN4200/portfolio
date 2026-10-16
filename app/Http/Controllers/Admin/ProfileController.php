@@ -11,10 +11,7 @@ class ProfileController extends Controller
 {
     public function edit()
     {
-        $user = Auth::user();
-        $user->load('profile');
-
-        return view('admin.profile.edit', ['user' => $user]);
+        return view('admin.profile.edit');
     }
 
     public function update(ProfileRequest $request)

@@ -9,7 +9,7 @@
 
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-slate-800">Website Settings</h1>
-        <p class="text-slate-500 mt-1">Configure your portfolio website's appearance and metadata.</p>
+        <p class="text-slate-500 mt-1">Manage your website's general, branding and SEO settings.</p>
     </div>
 
     <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="w-full" data-submitting data-validate data-validate-messages='@json((new \App\Http\Requests\SettingRequest)->messages())' data-validate-error-class="text-red-500 text-xs mt-1">
@@ -91,6 +91,15 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Contact Email</label>
                 <input type="email" name="settings[contact_email]" value="{{ $settings['contact_email'] ?? '' }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="you@example.com">
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+            <h2 class="text-lg font-semibold text-slate-800 mb-4">Security</h2>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Session Lifetime (minutes)</label>
+                <p class="text-xs text-slate-400 mb-2">Auto-logout users after this many minutes of inactivity. Set to 0 to disable auto-logout.</p>
+                <input type="number" name="settings[session_lifetime]" value="{{ $settings['session_lifetime'] ?? '120' }}" min="0" max="10080" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="120">
             </div>
         </div>
 

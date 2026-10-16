@@ -22,6 +22,7 @@ class SettingController extends Controller
             'signature_image' => Setting::get('signature_image', ''),
             'favicon' => Setting::get('favicon', ''),
             'hero_words' => Setting::get('hero_words', ''),
+            'session_lifetime' => Setting::get('session_lifetime', '120'),
         ];
 
         return view('admin.settings.index', compact('settings'));

@@ -38,7 +38,7 @@
                     setTimeout(() => toast.remove(), 300);
                 };
                 toast.querySelector('[data-toast-close]')?.addEventListener('click', remove);
-                setTimeout(remove, 4000);
+                setTimeout(remove, 3000);
             });
         });
     </script>
