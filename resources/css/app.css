@@ -462,6 +462,43 @@ html[data-theme='light'] select.select-xs {
     background-size: 0.8rem 0.8rem !important;
 }
 
+/* ============ Date / time / datetime-local inputs — theme-aware ============ */
+html[data-admin] input[type='date'],
+html[data-admin] input[type='time'],
+html[data-admin] input[type='datetime-local'] {
+    background-color: #ffffff;
+    border: 1px solid var(--color-slate-300);
+    color: #0f172a;
+}
+
+html[data-theme='dark']:not([data-auth]) input[type='date'],
+html[data-theme='dark']:not([data-auth]) input[type='time'],
+html[data-theme='dark']:not([data-auth]) input[type='datetime-local'] {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+html[data-theme='light'] input[type='date'],
+html[data-theme='light'] input[type='time'],
+html[data-theme='light'] input[type='datetime-local'] {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+}
+
+html[data-admin] input[type='date']::-webkit-calendar-picker-indicator,
+html[data-admin] input[type='time']::-webkit-calendar-picker-indicator,
+html[data-admin] input[type='datetime-local']::-webkit-calendar-picker-indicator {
+    filter: invert(0.3);
+}
+
+html[data-theme='dark']:not([data-auth]) input[type='date']::-webkit-calendar-picker-indicator,
+html[data-theme='dark']:not([data-auth]) input[type='time']::-webkit-calendar-picker-indicator,
+html[data-theme='dark']:not([data-auth]) input[type='datetime-local']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
 /* ============ Theme-aware checkboxes and radios ============ */
 /*
  * Native checkboxes/radios ignore the `text-*` utilities (those only set
@@ -638,6 +675,8 @@ html[data-admin] input[type='radio'] {
     appearance: none;
     -webkit-appearance: none;
     flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
     background-color: #ffffff;
     border: 1px solid var(--color-slate-300);
     border-radius: 0.3rem;
