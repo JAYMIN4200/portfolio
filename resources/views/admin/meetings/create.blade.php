@@ -15,67 +15,28 @@
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <div class="space-y-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" value="{{ old('name') }}" required placeholder="Contact name" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('name') border-red-300 @enderror">
-                        @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" value="{{ old('email') }}" required placeholder="you@example.com" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('email') border-red-300 @enderror">
-                        @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone</label>
-                        <input type="text" name="phone" value="{{ old('phone') }}" placeholder="e.g. +91 98765 43210" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('phone') border-red-300 @enderror">
-                        @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Company</label>
-                        <input type="text" name="company" value="{{ old('company') }}" placeholder="Optional" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('company') border-red-300 @enderror">
-                        @error('company') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Date <span class="text-red-500">*</span></label>
-                        <input type="date" name="meeting_date" value="{{ old('meeting_date') }}" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('meeting_date') border-red-300 @enderror">
-                        @error('meeting_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
+                    <x-form.input name="name" label="Name" required placeholder="Contact name" />
+                    <x-form.input type="email" name="email" label="Email" required placeholder="you@example.com" />
+                    <x-form.input name="phone" label="Phone" placeholder="e.g. +91 98765 43210" />
+                    <x-form.input name="company" label="Company" placeholder="Optional" />
+                    <x-form.input type="date" name="meeting_date" label="Date" required />
                     <div class="grid grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Time</label>
-                            <input type="time" name="meeting_time" value="{{ old('meeting_time') }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('meeting_time') border-red-300 @enderror">
-                            @error('meeting_time') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Duration (min)</label>
-                            <input type="number" name="duration" value="{{ old('duration') }}" min="5" max="480" placeholder="30" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('duration') border-red-300 @enderror">
-                            @error('duration') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                        <x-form.input type="time" name="meeting_time" label="Time" />
+                        <x-form.input type="number" name="duration" label="Duration (min)" min="5" max="480" placeholder="30" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Topic</label>
-                        <input type="text" name="topic" value="{{ old('topic') }}" placeholder="What will be discussed?" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('topic') border-red-300 @enderror">
-                        @error('topic') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Status <span class="text-red-500">*</span></label>
-                        <select name="status" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('status') border-red-300 @enderror">
-                            @foreach ($statuses as $status)
-                                <option value="{{ $status }}" {{ old('status', 'pending') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
-                            @endforeach
-                        </select>
-                        @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
+                    <x-form.input name="topic" label="Topic" placeholder="What will be discussed?" />
+
+                    <x-form.select name="status" label="Status" required :value="'pending'">
+                        @foreach ($statuses as $status)
+                            <option value="{{ $status }}" @selected(old('status', 'pending') === $status)>{{ ucfirst($status) }}</option>
+                        @endforeach
+                    </x-form.select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Notes</label>
-                    <textarea name="notes" rows="3" placeholder="Optional details..." class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('notes') border-red-300 @enderror">{{ old('notes') }}</textarea>
-                    @error('notes') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.textarea name="notes" label="Notes" :rows="3" placeholder="Optional details..." />
             </div>
         </div>
 

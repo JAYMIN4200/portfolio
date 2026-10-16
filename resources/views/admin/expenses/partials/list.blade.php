@@ -39,7 +39,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-5 py-12 text-center text-slate-400">No expenses yet. <a href="{{ route('admin.expenses.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first.</a></td></tr>
+                    <x-admin.empty-row :colspan="5" noun="expenses" route="admin.expenses.create" singular="expense" />
                 @endforelse
             </tbody>
             @if ($expenses->count())

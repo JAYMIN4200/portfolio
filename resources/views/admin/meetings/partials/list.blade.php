@@ -55,7 +55,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="px-5 py-12 text-center text-slate-400">No meetings found. <a href="{{ route('admin.meetings.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first.</a></td></tr>
+                    <x-admin.empty-row :colspan="6" noun="meetings" route="admin.meetings.create" singular="meeting" />
                 @endforelse
             </tbody>
         </table>

@@ -40,9 +40,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="4" class="px-5 py-12 text-center text-slate-400">No subscribers yet.</td>
-                    </tr>
+                    <x-admin.empty-row :colspan="4" noun="subscribers" />
                 @endforelse
             </tbody>
         </table>

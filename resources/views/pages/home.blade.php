@@ -243,16 +243,15 @@
                 <div>
                     <form method="POST" action="{{ route('newsletter.subscribe') }}" data-newsletter-form data-validate data-validate-messages='@json((new \App\Http\Requests\NewsletterRequest)->messages())' data-validate-error-class="newsletter-field-error mt-3 text-sm text-red-400" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
                         @csrf
-                        <input type="email" name="email" required placeholder="you@example.com" data-validate-error-slot="[data-newsletter-error]" class="flex-1 px-4 py-3 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all @error('email') border-red-400/60 @enderror">
+                        <x-form.field name="email" field-class="flex-1">
+                            <input type="email" name="email" required placeholder="you@example.com" data-validate-error-slot="[data-newsletter-error]" class="form-input">
+                        </x-form.field>
                         <button type="submit" class="px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] transition-all">
                             Subscribe
                         </button>
                     </form>
                     <p data-newsletter-message class="hidden mt-4 text-sm text-emerald-400">Thanks for subscribing! Check your inbox for updates.</p>
                     <p class="newsletter-field-error mt-3 text-sm text-red-400 hidden" data-newsletter-error></p>
-                    @error('email')
-                        <p class="mt-3 text-sm text-red-400">{{ $message }}</p>
-                    @enderror
                 </div>
             </div>
         </div>

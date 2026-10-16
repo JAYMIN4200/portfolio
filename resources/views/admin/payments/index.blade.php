@@ -9,7 +9,7 @@
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800">Payments &amp; Earnings</h1>
+            <h1 class="text-2xl font-bold text-slate-800">Payments &amp; Earnings ({{ $payments->total() }})</h1>
             <p class="text-slate-500 mt-1">Track the payments you receive from clients.</p>
         </div>
         <a href="{{ route('admin.payments.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">
@@ -36,19 +36,17 @@
     <div class="bg-white rounded-xl border border-slate-200">
         <div class="p-5 border-b border-slate-200">
             <form method="GET" data-ajax-form class="flex gap-2 flex-wrap">
-                <input type="text" name="search" value="{{ request('search') }}" data-ajax-search placeholder="Search client or reference..." class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                <select name="status" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    <option value="">All statuses</option>
+                <x-form.input name="search" size="sm" bare :value="request('search')" data-ajax-search placeholder="Search client or reference..." class="flex-1 min-w-[200px]" />
+                <x-form.select name="status" size="sm" bare :value="request('status')" placeholder="All statuses" data-ajax-filter>
                     @foreach ($statuses as $value => $label)
-                        <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $value }}" @selected((string) request('status') === (string) $value)>{{ $label }}</option>
                     @endforeach
-                </select>
-                <select name="method" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    <option value="">All methods</option>
+                </x-form.select>
+                <x-form.select name="method" size="sm" bare :value="request('method')" placeholder="All methods" data-ajax-filter>
                     @foreach ($methods as $value => $label)
-                        <option value="{{ $value }}" {{ request('method') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $value }}" @selected((string) request('method') === (string) $value)>{{ $label }}</option>
                     @endforeach
-                </select>
+                </x-form.select>
                 <button type="submit" class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Search</button>
                 @if (request('search') || request('status') || request('method'))
                     <a href="{{ route('admin.payments.index') }}" data-ajax-clear class="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700">Clear</a>

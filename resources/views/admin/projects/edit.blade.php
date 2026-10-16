@@ -11,70 +11,35 @@
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Title <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" value="{{ old('title', $project->title) }}" required placeholder="e.g. Portfolio Website" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('title') border-red-300 @enderror">
-                    @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="title" label="Title" required :value="$project->title" placeholder="e.g. Portfolio Website" />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Slug</label>
-                    <input type="text" name="slug" value="{{ old('slug', $project->slug) }}" placeholder="e.g. portfolio-website" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('slug') border-red-300 @enderror">
-                    @error('slug') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="slug" label="Slug" :value="$project->slug" placeholder="e.g. portfolio-website" />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Description <span class="text-red-500">*</span></label>
-                    <input type="text" name="description" value="{{ old('description', $project->description) }}" required placeholder="Short project description" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('description') border-red-300 @enderror">
-                    @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="description" label="Description" required :value="$project->description" placeholder="Short project description" />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Long Description</label>
-                    <textarea name="long_description" rows="6" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none @error('long_description') border-red-300 @enderror" placeholder="Detailed project description...">{{ old('long_description', $project->long_description) }}</textarea>
-                    @error('long_description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.textarea name="long_description" label="Long Description" :rows="6" :value="$project->long_description" placeholder="Detailed project description..." />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Image</label>
+                <x-form.field label="Image" for="image" name="image">
                     <div class="mb-2">
                         <img src="{{ $project->imageUrl() }}" alt="{{ $project->title }}" class="w-24 h-18 rounded-lg object-cover border border-slate-200">
                     </div>
-                    <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
-                    @error('image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                    <input type="file" name="image" id="image" accept="image/*" class="form-file">
+                </x-form.field>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Technologies</label>
-                    <input type="text" id="technologies_input" value="{{ old('technologies') ? (is_array(old('technologies')) ? implode(', ', old('technologies')) : old('technologies')) : (is_array($project->technologies) ? implode(', ', $project->technologies) : $project->technologies) }}" placeholder="Laravel, Vue.js, Tailwind CSS, MySQL" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('technologies') border-red-300 @enderror">
+                <x-form.field name="technologies" label="Technologies" for="technologies_input" hint="Comma-separated list of technologies used.">
+                    <input type="text" id="technologies_input" value="{{ old('technologies') ? (is_array(old('technologies')) ? implode(', ', old('technologies')) : old('technologies')) : (is_array($project->technologies) ? implode(', ', $project->technologies) : $project->technologies) }}" placeholder="Laravel, Vue.js, Tailwind CSS, MySQL" class="form-input">
                     <div id="technologies_hidden"></div>
-                    <p class="text-xs text-slate-400 mt-1">Comma-separated list of technologies used.</p>
-                    @error('technologies') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </x-form.field>
+
+                <div class="grid grid-cols-2 gap-5">
+                    <x-form.input name="live_url" label="Live URL" type="url" :value="$project->live_url" placeholder="https://example.com" />
+                    <x-form.input name="github_url" label="GitHub URL" type="url" :value="$project->github_url" placeholder="https://github.com/user/repo" />
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Live URL</label>
-                        <input type="url" name="live_url" value="{{ old('live_url', $project->live_url) }}" placeholder="https://example.com" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('live_url') border-red-300 @enderror">
-                        @error('live_url') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">GitHub URL</label>
-                        <input type="url" name="github_url" value="{{ old('github_url', $project->github_url) }}" placeholder="https://github.com/user/repo" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('github_url') border-red-300 @enderror">
-                        @error('github_url') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>
-                        <input type="number" name="sort_order" value="{{ old('sort_order', $project->sort_order) }}" min="0" placeholder="0" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    </div>
+                    <x-form.input name="sort_order" label="Sort Order" type="number" :value="$project->sort_order" min="0" placeholder="0" />
                     <div class="flex items-end pb-2.5">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $project->is_featured) ? 'checked' : '' }}>
-                            <span class="text-sm text-slate-700 font-medium">Featured project</span>
-                        </label>
+                        <x-form.checkbox name="is_featured" label="Featured project" :checked="old('is_featured', $project->is_featured)" />
                     </div>
                 </div>
             </div>

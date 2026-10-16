@@ -19,88 +19,53 @@
             <h2 class="text-lg font-semibold text-slate-800 mb-4">General</h2>
             <div class="space-y-5">
                 <div class="grid grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Site Title</label>
-                        <input type="text" name="settings[site_title]" value="{{ $settings['site_title'] ?? '' }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="Your Name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Tagline</label>
-                        <input type="text" name="settings[site_tagline]" value="{{ $settings['site_tagline'] ?? '' }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="Full-Stack Developer & Designer">
-                    </div>
+                    <x-form.input name="settings[site_title]" label="Site Title" :value="$settings['site_title'] ?? ''" placeholder="Your Name" />
+                    <x-form.input name="settings[site_tagline]" label="Tagline" :value="$settings['site_tagline'] ?? ''" placeholder="Full-Stack Developer & Designer" />
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                    <textarea name="settings[site_description]" rows="3" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none" placeholder="A short description of yourself and what you do...">{{ $settings['site_description'] ?? '' }}</textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Footer Text</label>
-                    <input type="text" name="settings[footer_text]" value="{{ $settings['footer_text'] ?? '' }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="All rights reserved.">
-                </div>
+                <x-form.textarea name="settings[site_description]" label="Description" :rows="3" :value="$settings['site_description'] ?? ''" placeholder="A short description of yourself and what you do..." />
+                <x-form.input name="settings[footer_text]" label="Footer Text" :value="$settings['footer_text'] ?? ''" placeholder="All rights reserved." />
             </div>
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-slate-800 mb-4">Home Hero</h2>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Typewriter Words</label>
-                <p class="text-xs text-slate-400 mb-2">Shown one by one in the home hero headline. Separate each word/phrase with a comma.</p>
-                <textarea name="settings[hero_words]" rows="3" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none" placeholder="Web Applications, Modern Websites, APIs &amp; Systems, Mobile Solutions">{{ $settings['hero_words'] ?? '' }}</textarea>
-            </div>
+            <x-form.textarea name="settings[hero_words]" label="Typewriter Words" :rows="3" :value="$settings['hero_words'] ?? ''" hint="Shown one by one in the home hero headline. Separate each word/phrase with a comma." placeholder="Web Applications, Modern Websites, APIs &amp; Systems, Mobile Solutions" />
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-slate-800 mb-4">Branding</h2>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Signature Image</label>
+            <x-form.field name="settings.signature_image" label="Signature Image" for="signature_image" hint="Max 15MB. Recommended: transparent PNG, ~250x100px.">
                 <p class="text-xs text-slate-400 mb-2">Shown next to your name in the header (replaces the letter logo). Use a transparent PNG signature.</p>
                 <div data-signature-preview class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit {{ $signaturePreview ? '' : 'hidden' }}">
                     <img src="{{ $signaturePreview }}" alt="Signature" class="w-28 h-12 object-contain bg-slate-100">
                 </div>
-                <input type="file" name="settings[signature_image]" accept="image/*" data-signature-input
-                       class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
-                <p class="text-xs text-slate-400 mt-1">Max 15MB. Recommended: transparent PNG, ~250x100px.</p>
-            </div>
-            <div class="mt-5">
-                <label class="block text-sm font-medium text-slate-700 mb-1">Favicon</label>
+                <input type="file" name="settings[signature_image]" id="signature_image" accept="image/*" data-signature-input class="form-file">
+            </x-form.field>
+            <x-form.field name="settings.favicon" label="Favicon" for="favicon" hint="Max 2MB. Recommended: square PNG/ICO, 32x32 or 64x64px." field-class="mt-5">
                 <p class="text-xs text-slate-400 mb-2">Shown in the browser tab next to your site name.</p>
                 <div data-favicon-preview class="mb-2 overflow-hidden rounded-lg border border-slate-200 w-fit {{ $faviconPreview ? '' : 'hidden' }}">
                     <img src="{{ $faviconPreview }}" alt="Favicon" class="w-12 h-12 object-contain bg-slate-100">
                 </div>
-                <input type="file" name="settings[favicon]" accept="image/*" data-favicon-input
-                       class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
-                <p class="text-xs text-slate-400 mt-1">Max 2MB. Recommended: square PNG/ICO, 32x32 or 64x64px.</p>
-            </div>
+                <input type="file" name="settings[favicon]" id="favicon" accept="image/*" data-favicon-input class="form-file">
+            </x-form.field>
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-slate-800 mb-4">SEO</h2>
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Meta Keywords</label>
-                    <input type="text" name="settings[meta_keywords]" value="{{ $settings['meta_keywords'] ?? '' }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="developer, portfolio, web developer, designer">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Meta Description</label>
-                    <textarea name="settings[meta_description]" rows="3" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none" placeholder="SEO description for search engines...">{{ $settings['meta_description'] ?? '' }}</textarea>
-                </div>
+                <x-form.input name="settings[meta_keywords]" label="Meta Keywords" :value="$settings['meta_keywords'] ?? ''" placeholder="developer, portfolio, web developer, designer" />
+                <x-form.textarea name="settings[meta_description]" label="Meta Description" :rows="3" :value="$settings['meta_description'] ?? ''" placeholder="SEO description for search engines..." />
             </div>
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-slate-800 mb-4">Contact</h2>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Contact Email</label>
-                <input type="email" name="settings[contact_email]" value="{{ $settings['contact_email'] ?? '' }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="you@example.com">
-            </div>
+            <x-form.input name="settings[contact_email]" type="email" label="Contact Email" :value="$settings['contact_email'] ?? ''" placeholder="you@example.com" />
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-slate-800 mb-4">Security</h2>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Session Lifetime (minutes)</label>
-                <p class="text-xs text-slate-400 mb-2">Auto-logout users after this many minutes of inactivity. Set to 0 to disable auto-logout.</p>
-                <input type="number" name="settings[session_lifetime]" value="{{ $settings['session_lifetime'] ?? '120' }}" min="0" max="10080" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all" placeholder="120">
-            </div>
+            <x-form.input name="settings[session_lifetime]" type="number" label="Session Lifetime (minutes)" :value="$settings['session_lifetime'] ?? '120'" min="0" max="10080" hint="Auto-logout users after this many minutes of inactivity. Set to 0 to disable auto-logout." placeholder="120" />
         </div>
 
         <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">

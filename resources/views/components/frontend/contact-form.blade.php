@@ -82,74 +82,47 @@
         <form action="{{ route('contact.send') }}" method="POST" class="space-y-5" data-contact-form data-validate data-validate-messages='@json((new \App\Http\Requests\ContactRequest)->messages())' data-validate-error-class="contact-field-error mt-2 text-sm text-red-400">
             @csrf
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-slate-300 mb-2">Name <span class="text-red-400">*</span></label>
+                <x-form.field name="name" label="Name" for="name" required>
                     <input type="text" id="name" name="name" value="{{ old('name') }}" required
                            data-validate-error-slot='[data-field-error="name"]'
-                           class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('name') border-red-400/60 @enderror"
-                           placeholder="Your name">
-                    @error('name')
-                        <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                    @else
-                        <p class="contact-field-error mt-2 text-sm text-red-400 hidden" data-field-error="name"></p>
-                    @endif
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email <span class="text-red-400">*</span></label>
+                           class="form-input" placeholder="Your name">
+                    <p class="contact-field-error form-error hidden" data-field-error="name"></p>
+                </x-form.field>
+                <x-form.field name="email" label="Email" for="email" required>
                     <input type="email" id="email" name="email" value="{{ old('email') }}" required
                            data-validate-error-slot='[data-field-error="email"]'
-                           class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('email') border-red-400/60 @enderror"
-                           placeholder="you@example.com">
-                    @error('email')
-                        <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                    @else
-                        <p class="contact-field-error mt-2 text-sm text-red-400 hidden" data-field-error="email"></p>
-                    @endif
-                </div>
+                           class="form-input" placeholder="you@example.com">
+                    <p class="contact-field-error form-error hidden" data-field-error="email"></p>
+                </x-form.field>
             </div>
-            <div>
-                <label for="subject" class="block text-sm font-medium text-slate-300 mb-2">Subject <span class="text-red-400">*</span></label>
-                <div class="relative">
-                    <select id="subject" name="subject" required data-subject-select
-                            data-validate-error-slot='[data-field-error="subject"]'
-                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('subject') border-red-400/60 @enderror">
-                        <option value="" disabled selected>Select an enquiry type...</option>
-                        @foreach ($topics as $topic)
-                            <option value="{{ $topic }}" {{ old('subject') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
-                        @endforeach
-                        <option value="Other" {{ old('subject') === 'Other' ? 'selected' : '' }}>Other</option>
-                    </select>
-                </div>
-                @error('subject')
-                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                @else
-                    <p class="contact-field-error mt-2 text-sm text-red-400 hidden" data-field-error="subject"></p>
-                @endif
-            </div>
+            <x-form.field name="subject" label="Subject" for="subject" required>
+                <select id="subject" name="subject" required data-subject-select
+                        data-validate-error-slot='[data-field-error="subject"]'
+                        class="form-select">
+                    <option value="" disabled selected>Select an enquiry type...</option>
+                    @foreach ($topics as $topic)
+                        <option value="{{ $topic }}" {{ old('subject') === $topic ? 'selected' : '' }}>{{ $topic }}</option>
+                    @endforeach
+                    <option value="Other" {{ old('subject') === 'Other' ? 'selected' : '' }}>Other</option>
+                </select>
+                <p class="contact-field-error form-error hidden" data-field-error="subject"></p>
+            </x-form.field>
             <div data-subject-other-wrap class="{{ old('subject') === 'Other' ? '' : 'hidden' }}">
-                <label for="subject_other" class="block text-sm font-medium text-slate-300 mb-2">Please specify <span class="text-red-400">*</span></label>
-                <input type="text" id="subject_other" name="subject_other" value="{{ old('subject_other') }}"
-                       data-validate-error-slot='[data-field-error="subject_other"]'
-                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
-                       placeholder="Tell me what your enquiry is about">
-                @error('subject_other')
-                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                @else
-                    <p class="contact-field-error mt-2 text-sm text-red-400 hidden" data-field-error="subject_other"></p>
-                @endif
+                <x-form.field name="subject_other" label="Please specify" for="subject_other" required>
+                    <input type="text" id="subject_other" name="subject_other" value="{{ old('subject_other') }}"
+                           data-validate-error-slot='[data-field-error="subject_other"]'
+                           class="form-input"
+                           placeholder="Tell me what your enquiry is about">
+                    <p class="contact-field-error form-error hidden" data-field-error="subject_other"></p>
+                </x-form.field>
             </div>
-            <div>
-                <label for="message" class="block text-sm font-medium text-slate-300 mb-2">Message <span class="text-red-400">*</span></label>
+            <x-form.field name="message" label="Message" for="message" required>
                 <textarea id="message" name="message" rows="5" required
                           data-validate-error-slot='[data-field-error="message"]'
-                          class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none @error('message') border-red-400/60 @enderror"
+                          class="form-textarea resize-none"
                           placeholder="Tell me about your project...">{{ old('message') }}</textarea>
-                @error('message')
-                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                @else
-                    <p class="contact-field-error mt-2 text-sm text-red-400 hidden" data-field-error="message"></p>
-                @endif
-            </div>
+                <p class="contact-field-error form-error hidden" data-field-error="message"></p>
+            </x-form.field>
             <div>
                 <button type="submit" data-contact-submit class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>

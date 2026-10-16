@@ -11,23 +11,11 @@
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Title <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" value="{{ old('title', $post->title) }}" required placeholder="e.g. Building REST APIs with Laravel" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('title') border-red-300 @enderror">
-                    @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="title" label="Title" required :value="$post->title" placeholder="e.g. Building REST APIs with Laravel" />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Slug <span class="text-red-500">*</span></label>
-                    <input type="text" name="slug" value="{{ old('slug', $post->slug) }}" required placeholder="e.g. building-rest-apis-with-laravel" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('slug') border-red-300 @enderror">
-                    @error('slug') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="slug" label="Slug" required :value="$post->slug" placeholder="e.g. building-rest-apis-with-laravel" />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Excerpt</label>
-                    <textarea name="excerpt" rows="2" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none" placeholder="A short summary shown in blog listings.">{{ old('excerpt', $post->excerpt) }}</textarea>
-                    @error('excerpt') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.textarea name="excerpt" label="Excerpt" :rows="2" :value="$post->excerpt" placeholder="A short summary shown in blog listings." />
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Content <span class="text-red-500">*</span></label>
@@ -37,23 +25,20 @@
 
                 <div class="grid grid-cols-3 gap-5 items-end">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Featured Image</label>
-                        @if ($postImageUrl = $post->imageUrl())
-                            <div class="mb-2">
-                                <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-20 h-14 rounded-lg object-cover border border-slate-200">
-                            </div>
-                        @endif
-                        <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
+                        <x-form.field label="Featured Image" for="image" name="image">
+                            @if ($postImageUrl = $post->imageUrl())
+                                <div class="mb-2">
+                                    <img src="{{ $postImageUrl }}" alt="{{ $post->title }}" class="w-20 h-14 rounded-lg object-cover border border-slate-200">
+                                </div>
+                            @endif
+                            <input type="file" name="image" id="image" accept="image/*" class="form-file">
+                        </x-form.field>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Publish Date</label>
-                        <input type="datetime-local" name="published_at" value="{{ old('published_at', $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
+                        <x-form.input name="published_at" label="Publish Date" type="datetime-local" :value="$post->published_at ? $post->published_at->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')" />
                     </div>
                     <div class="flex items-end pb-2.5">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_published" value="1" {{ old('is_published', $post->is_published) ? 'checked' : '' }}>
-                            <span class="text-sm text-slate-700 font-medium">Published</span>
-                        </label>
+                        <x-form.checkbox name="is_published" label="Published" :checked="old('is_published', $post->is_published)" />
                     </div>
                 </div>
             </div>

@@ -44,9 +44,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="5" class="px-5 py-12 text-center text-slate-400">No skills found. <a href="{{ route('admin.skills.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first skill.</a></td>
-                    </tr>
+                    <x-admin.empty-row :colspan="5" noun="skills" route="admin.skills.create" singular="skill" />
                 @endforelse
             </tbody>
         </table>

@@ -10,7 +10,7 @@
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800">My Tasks</h1>
+            <h1 class="text-2xl font-bold text-slate-800">My Tasks ({{ $tasks->total() }})</h1>
             <p class="text-slate-500 mt-1">Plan, track and complete your work.</p>
         </div>
         <a href="{{ route('admin.tasks.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">
@@ -24,19 +24,17 @@
             <input type="hidden" name="status" value="{{ $activeStatus }}">
             <input type="hidden" name="date" value="{{ $selectedDate }}">
 
-            <input type="text" name="search" value="{{ request('search') }}" data-ajax-search placeholder="Search tasks..." class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-            <select name="priority" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                <option value="">All priorities</option>
+            <x-form.input name="search" size="sm" bare :value="request('search')" data-ajax-search placeholder="Search tasks..." class="flex-1 min-w-[200px]" />
+            <x-form.select name="priority" size="sm" bare :value="request('priority')" placeholder="All priorities" data-ajax-filter>
                 @foreach (App\Models\Task::PRIORITIES as $value => $label)
-                    <option value="{{ $value }}" {{ request('priority') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    <option value="{{ $value }}" @selected((string) request('priority') === (string) $value)>{{ $label }}</option>
                 @endforeach
-            </select>
-            <select name="category" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                <option value="">All categories</option>
+            </x-form.select>
+            <x-form.select name="category" size="sm" bare :value="request('category')" placeholder="All categories" data-ajax-filter>
                 @foreach ($categories as $category)
-                    <option value="{{ $category }}" {{ request('category') === $category ? 'selected' : '' }}>{{ $category }}</option>
+                    <option value="{{ $category }}" @selected((string) request('category') === (string) $category)>{{ $category }}</option>
                 @endforeach
-            </select>
+            </x-form.select>
             <button type="submit" class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Search</button>
             @if (request('search') || request('priority') || request('category') || $selectedDate)
                 <a href="{{ route('admin.tasks.index') }}" data-ajax-clear class="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700">Clear</a>

@@ -11,70 +11,134 @@
 
     @php
         $statCards = [
-            ['label' => 'Projects', 'value' => number_format($projects), 'route' => 'admin.projects.index', 'iconBg' => 'bg-emerald-50 text-emerald-600', 'iconBgHover' => 'group-hover:bg-emerald-100', 'hoverBorder' => 'hover:border-emerald-300', 'icon' => 'M6 7h12M6 11h12M6 15h8m-5 5H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v8'],
-            ['label' => 'My Tasks', 'value' => number_format($tasks), 'route' => 'admin.tasks.index', 'iconBg' => 'bg-blue-50 text-blue-600', 'iconBgHover' => 'group-hover:bg-blue-100', 'hoverBorder' => 'hover:border-blue-300', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'badge' => $tasksPending],
-            ['label' => 'Payments Received', 'value' => '₹ '.number_format($paymentsReceived, 2), 'route' => 'admin.payments.index', 'iconBg' => 'bg-indigo-50 text-indigo-600', 'iconBgHover' => 'group-hover:bg-indigo-100', 'hoverBorder' => 'hover:border-indigo-300', 'icon' => 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 002-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'],
-            ['label' => 'Total Expenses', 'value' => '₹ '.number_format($expensesTotal, 2), 'route' => 'admin.expenses.index', 'iconBg' => 'bg-amber-50 text-amber-600', 'iconBgHover' => 'group-hover:bg-amber-100', 'hoverBorder' => 'hover:border-amber-300', 'icon' => 'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6'],
+            [
+                'label' => 'Total Visits',
+                'value' => number_format($totalVisits),
+                'icon' => 'M13 10V3L4 14h7v7l9-11h-7z',
+                'chip' => 'bg-indigo-50 text-indigo-600 ring-indigo-100',
+                'accent' => 'from-indigo-400 to-violet-500',
+                'hoverBorder' => 'hover:border-indigo-300',
+            ],
+            [
+                'label' => 'Visits Today',
+                'value' => number_format($todayVisits),
+                'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+                'chip' => 'bg-sky-50 text-sky-600 ring-sky-100',
+                'accent' => 'from-sky-400 to-cyan-500',
+                'hoverBorder' => 'hover:border-sky-300',
+            ],
+            [
+                'label' => 'Unique Visitors',
+                'value' => number_format($uniqueVisitors),
+                'icon' => 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-2-7.5 4 4 0 002 7.5zm6 2a3 3 0 10-2-5.62',
+                'chip' => 'bg-cyan-50 text-cyan-600 ring-cyan-100',
+                'accent' => 'from-cyan-400 to-teal-500',
+                'hoverBorder' => 'hover:border-cyan-300',
+            ],
+            [
+                'label' => 'Total Expenses',
+                'value' => number_format($expensesTotal, 2),
+                'currency' => true,
+                'route' => 'admin.expenses.index',
+                'icon' => 'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6',
+                'chip' => 'bg-rose-50 text-rose-600 ring-rose-100',
+                'accent' => 'from-rose-400 to-red-500',
+                'hoverBorder' => 'hover:border-rose-300',
+                'valueSize' => 'text-xl',
+            ],
         ];
     @endphp
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        @foreach ($statCards as $card)
-            <a href="{{ route($card['route']) }}" class="bg-white rounded-xl border border-slate-200 p-5 {{ $card['hoverBorder'] }} hover:shadow-md transition-all group">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-lg {{ $card['iconBg'] }} {{ $card['iconBgHover'] }} flex items-center justify-center transition-colors relative">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $card['icon'] }}"/></svg>
-                        @if (!empty($card['badge']) && $card['badge'] > 0)
-                            <span class="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{{ $card['badge'] }}</span>
-                        @endif
-                    </div>
-                </div>
-                <p class="text-xl font-bold text-slate-800">{{ $card['value'] }}</p>
-                <p class="text-xs text-slate-500 mt-1">{{ $card['label'] }}</p>
-            </a>
+    @php
+        $primaryCards = [
+            [
+                'label' => 'Projects',
+                'value' => number_format($projects),
+                'route' => 'admin.projects.index',
+                'icon' => 'M6 7h12M6 11h12M6 15h8m-5 5H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v8',
+                'chip' => 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+                'accent' => 'from-emerald-400 to-teal-500',
+                'hoverBorder' => 'hover:border-emerald-300',
+            ],
+            [
+                'label' => 'My Tasks',
+                'value' => number_format($tasks),
+                'route' => 'admin.tasks.index',
+                'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+                'chip' => 'bg-blue-50 text-blue-600 ring-blue-100',
+                'accent' => 'from-blue-400 to-indigo-500',
+                'hoverBorder' => 'hover:border-blue-300',
+                'badge' => $tasksPending > 0 ? $tasksPending . ' pending' : null,
+            ],
+            [
+                'label' => 'Pending',
+                'value' => number_format($paymentsPending, 2),
+                'currency' => true,
+                'route' => 'admin.payments.index',
+                'params' => ['status' => App\Models\Payment::STATUS_PENDING],
+                'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+                'chip' => 'bg-amber-50 text-amber-600 ring-amber-100',
+                'accent' => 'from-amber-400 to-orange-500',
+                'hoverBorder' => 'hover:border-amber-300',
+                'valueSize' => 'text-xl',
+            ],
+            [
+                'label' => 'Received',
+                'value' => number_format($paymentsReceived, 2),
+                'currency' => true,
+                'route' => 'admin.payments.index',
+                'params' => ['status' => App\Models\Payment::STATUS_RECEIVED],
+                'icon' => 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z',
+                'chip' => 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+                'accent' => 'from-emerald-400 to-green-500',
+                'hoverBorder' => 'hover:border-emerald-300',
+                'valueSize' => 'text-xl',
+            ],
+        ];
+    @endphp
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        @foreach ($primaryCards as $card)
+            <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg {{ $card['hoverBorder'] }}">
+                <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r {{ $card['accent'] }} opacity-70 transition-opacity group-hover:opacity-100"></span>
+
+                @isset($card['route'])
+                    <a href="{{ route($card['route'], $card['params'] ?? []) }}" class="absolute inset-0 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" aria-label="{{ $card['label'] }}"></a>
+                @endisset
+
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl ring-1 ring-inset transition-transform duration-200 group-hover:scale-105 {{ $card['chip'] }}">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $card['icon'] }}"/></svg>
+                </span>
+
+                <p class="mt-4 font-bold tracking-tight text-slate-900 {{ $card['valueSize'] ?? 'text-2xl' }}">@if (!empty($card['currency']))&#8377; @endif{{ $card['value'] }}</p>
+                <p class="mt-1 text-xs font-medium text-slate-500">
+                    {{ $card['label'] }}
+                    @if (!empty($card['badge']))
+                        <span class="ml-1 inline-block rounded-full bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-600 ring-1 ring-inset ring-red-100">{{ $card['badge'] }}</span>
+                    @endif
+                </p>
+            </div>
         @endforeach
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-xl border border-slate-200 p-5">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-slate-800">{{ number_format($totalVisits) }}</p>
-            <p class="text-xs text-slate-500 mt-1">Total Visits</p>
-        </div>
+    {{-- Traffic & expenses --}}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        @foreach ($statCards as $card)
+            <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg {{ $card['hoverBorder'] }}">
+                <span class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r {{ $card['accent'] }} opacity-70 transition-opacity group-hover:opacity-100"></span>
 
-        <div class="bg-white rounded-xl border border-slate-200 p-5">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-slate-800">{{ number_format($todayVisits) }}</p>
-            <p class="text-xs text-slate-500 mt-1">Visits Today</p>
-        </div>
+                @isset($card['route'])
+                    <a href="{{ route($card['route'], $card['params'] ?? []) }}" class="absolute inset-0 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" aria-label="{{ $card['label'] }}"></a>
+                @endisset
 
-        <div class="bg-white rounded-xl border border-slate-200 p-5">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-2-7.5 4 4 0 002 7.5zm6 2a3 3 0 10-2-5.62"/></svg>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-slate-800">{{ number_format($uniqueVisitors) }}</p>
-            <p class="text-xs text-slate-500 mt-1">Unique Visitors</p>
-        </div>
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl ring-1 ring-inset transition-transform duration-200 group-hover:scale-105 {{ $card['chip'] }}">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $card['icon'] }}"/></svg>
+                </span>
 
-        <a href="{{ route('admin.newsletter.index') }}" class="bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-md transition-all group">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                </div>
+                <p class="mt-4 font-bold tracking-tight text-slate-900 {{ $card['valueSize'] ?? 'text-2xl' }}">@if (!empty($card['currency']))&#8377; @endif{{ $card['value'] }}</p>
+                <p class="mt-1 text-xs font-medium text-slate-500">{{ $card['label'] }}</p>
             </div>
-            <p class="text-2xl font-bold text-slate-800">{{ number_format($subscribers) }}</p>
-            <p class="text-xs text-slate-500 mt-1">Newsletter Subscribers</p>
-        </a>
+        @endforeach
     </div>
 
     @php
@@ -94,11 +158,11 @@
                         </button>
                     @endforeach
                 </div>
-                <select data-chart-type class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
+                <x-form.select name="chart_type" size="sm" bare :value="$financialType" data-chart-type>
                     @foreach ($types as $value => $label)
                         <option value="{{ $value }}" {{ $financialType === $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
-                </select>
+                </x-form.select>
             </div>
         </div>
 

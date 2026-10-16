@@ -50,7 +50,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-5 py-12 text-center text-slate-400">No testimonials yet. <a href="{{ route('admin.testimonials.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first.</a></td></tr>
+                    <x-admin.empty-row :colspan="5" noun="testimonials" route="admin.testimonials.create" singular="testimonial" />
                 @endforelse
             </tbody>
         </table>

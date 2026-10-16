@@ -40,11 +40,10 @@
 
             <form method="POST" action="{{ route('password.update') }}" data-submitting class="space-y-5" data-validate data-validate-messages='@json((new \App\Http\Requests\ResetPasswordRequest)->messages())' data-validate-error-class="text-red-500 text-xs mt-1">
                 @csrf
-                <div>
-                    <label for="password" class="block text-sm font-medium text-slate-300 mb-1.5">New Password <span class="text-red-500">*</span></label>
+                <x-form.field name="password" label="New Password" for="password" required>
                     <div class="relative">
                         <input type="password" id="password" name="password" required
-                               class="w-full px-4 py-3 pr-12 rounded-lg border border-white/10 bg-slate-950/60 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
+                               class="form-input pr-12"
                                placeholder="Min. 8 characters">
                         <button type="button" data-password-toggle data-password-toggle-for="password"
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-200 transition-colors" aria-label="Show password">
@@ -52,12 +51,11 @@
                             <svg class="w-5 h-5 hidden" data-icon-eye-off fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
                         </button>
                     </div>
-                </div>
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-medium text-slate-300 mb-1.5">Confirm New Password <span class="text-red-500">*</span></label>
+                </x-form.field>
+                <x-form.field name="password_confirmation" label="Confirm New Password" for="password_confirmation" required>
                     <div class="relative">
                         <input type="password" id="password_confirmation" name="password_confirmation" required
-                               class="w-full px-4 py-3 pr-12 rounded-lg border border-white/10 bg-slate-950/60 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
+                               class="form-input pr-12"
                                placeholder="••••••••">
                         <button type="button" data-password-toggle data-password-toggle-for="password_confirmation"
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-200 transition-colors" aria-label="Show password">
@@ -65,7 +63,7 @@
                             <svg class="w-5 h-5 hidden" data-icon-eye-off fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
                         </button>
                     </div>
-                </div>
+                </x-form.field>
                 <button type="submit" data-submit-form class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] transition-all">
                     <span data-submit-label>Reset Password</span>
                     <svg data-submit-spinner class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><path class="opacity-30" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>

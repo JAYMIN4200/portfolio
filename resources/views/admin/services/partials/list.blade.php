@@ -30,7 +30,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="4" class="px-5 py-12 text-center text-slate-400">No services yet. <a href="{{ route('admin.services.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first.</a></td></tr>
+                    <x-admin.empty-row :colspan="4" noun="services" route="admin.services.create" singular="service" />
                 @endforelse
             </tbody>
         </table>

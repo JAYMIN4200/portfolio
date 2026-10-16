@@ -45,12 +45,12 @@
                             <form method="POST" action="{{ route('admin.tasks.status', $task) }}">
                                 @csrf
                                 @method('PATCH')
-                                <select name="status" onchange="this.form.submit()"
-                                    class="select-xs rounded-lg border px-2 py-1 text-xs font-medium text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none {{ $statusStyles[$task->status] ?? 'border-slate-200' }}">
+                                <x-form.select name="status" size="sm" bare :value="$task->status" onchange="this.form.submit()"
+                                    class="{{ $statusStyles[$task->status] ?? 'border-slate-200' }}">
                                     @foreach (\App\Models\Task::STATUSES as $value => $label)
                                         <option value="{{ $value }}" {{ $task->status === $value ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach
-                                </select>
+                                </x-form.select>
                             </form>
                         </td>
                         <td class="px-5 py-4 whitespace-nowrap">
@@ -75,7 +75,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-5 py-12 text-center text-slate-400">No tasks found. <a href="{{ route('admin.tasks.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first task.</a></td></tr>
+                    <x-admin.empty-row :colspan="5" noun="tasks" route="admin.tasks.create" singular="task" />
                 @endforelse
             </tbody>
         </table>

@@ -6,7 +6,7 @@
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800">Meetings</h1>
+            <h1 class="text-2xl font-bold text-slate-800">Meetings ({{ $meetings->total() }})</h1>
             <p class="text-slate-500 mt-1">Manage meeting requests from the website and your own schedule.</p>
         </div>
         <a href="{{ route('admin.meetings.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">
@@ -18,18 +18,16 @@
     <div class="bg-white rounded-xl border border-slate-200">
         <div class="p-5 border-b border-slate-200">
             <form method="GET" data-ajax-form class="flex gap-2 flex-wrap">
-                <input type="text" name="search" value="{{ request('search') }}" data-ajax-search placeholder="Search name, email or company..." class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                <select name="status" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    <option value="">All statuses</option>
+                <x-form.input name="search" size="sm" bare :value="request('search')" data-ajax-search placeholder="Search name, email or company..." class="flex-1 min-w-[200px]" />
+                <x-form.select name="status" size="sm" bare :value="request('status')" placeholder="All statuses" data-ajax-filter>
                     @foreach ($statuses as $status)
-                        <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                        <option value="{{ $status }}" @selected((string) request('status') === (string) $status)>{{ ucfirst($status) }}</option>
                     @endforeach
-                </select>
-                <select name="source" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    <option value="">All sources</option>
-                    <option value="public" {{ request('source') === 'public' ? 'selected' : '' }}>From website</option>
-                    <option value="admin" {{ request('source') === 'admin' ? 'selected' : '' }}>Added by admin</option>
-                </select>
+                </x-form.select>
+                <x-form.select name="source" size="sm" bare :value="request('source')" placeholder="All sources" data-ajax-filter>
+                    <option value="public" @selected((string) request('source') === 'public')>From website</option>
+                    <option value="admin" @selected((string) request('source') === 'admin')>Added by admin</option>
+                </x-form.select>
                 <button type="submit" class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Search</button>
                 @if (request('search') || request('status') || request('source'))
                     <a href="{{ route('admin.meetings.index') }}" data-ajax-clear class="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700">Clear</a>

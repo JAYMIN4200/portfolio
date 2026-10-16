@@ -13,39 +13,21 @@
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Title <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" value="{{ old('title', $expense->title) }}" required placeholder="e.g. Domain renewal" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('title') border-red-300 @enderror">
-                    @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="title" label="Title" required placeholder="e.g. Domain renewal" :value="$expense->title" />
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Amount (&#8377;) <span class="text-red-500">*</span></label>
-                        <input type="number" name="amount" value="{{ old('amount', $expense->amount) }}" required step="0.01" min="0.01" placeholder="0.00" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('amount') border-red-300 @enderror">
-                        @error('amount') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Category <span class="text-red-500">*</span></label>
-                        <select name="category" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('category') border-red-300 @enderror">
-                            @foreach ($categories as $category)
-                                <option value="{{ $category }}" {{ old('category', $expense->category) === $category ? 'selected' : '' }}>{{ $category }}</option>
-                            @endforeach
-                        </select>
-                        @error('category') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Date <span class="text-red-500">*</span></label>
-                        <input type="date" name="expense_date" value="{{ old('expense_date', optional($expense->expense_date)->format('Y-m-d')) }}" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('expense_date') border-red-300 @enderror">
-                        @error('expense_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
+                    <x-form.input type="number" name="amount" label="Amount (&#8377;)" required step="0.01" min="0.01" placeholder="0.00" :value="$expense->amount" />
+
+                    <x-form.select name="category" label="Category" required :value="$expense->category">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category }}" @selected(old('category', $expense->category) === $category)>{{ $category }}</option>
+                        @endforeach
+                    </x-form.select>
+
+                    <x-form.input type="date" name="expense_date" label="Date" required :value="$expense->expense_date?->format('Y-m-d')" />
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Notes</label>
-                    <textarea name="notes" rows="3" placeholder="Optional details..." class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('notes') border-red-300 @enderror">{{ old('notes', $expense->notes) }}</textarea>
-                    @error('notes') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.textarea name="notes" label="Notes" :rows="3" placeholder="Optional details..." :value="$expense->notes" />
             </div>
         </div>
 

@@ -46,12 +46,7 @@
 
             <form method="POST" action="{{ route('password.email') }}" data-submitting class="space-y-5" data-validate data-validate-messages='@json((new \App\Http\Requests\ForgotPasswordRequest)->messages())' data-validate-error-class="text-red-500 text-xs mt-1">
                 @csrf
-                <div>
-                    <label for="email" class="block text-sm font-medium text-slate-300 mb-1.5">Email Address <span class="text-red-500">*</span></label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full px-4 py-3 rounded-lg border border-white/10 bg-slate-950/60 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
-                           placeholder="admin@example.com">
-                </div>
+                <x-form.input type="email" id="email" name="email" label="Email Address" required autofocus placeholder="admin@example.com" />
                 <button type="submit" data-submit-form class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.01] transition-all">
                     <span data-submit-label>Continue</span>
                     <svg data-submit-spinner class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><path class="opacity-30" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>

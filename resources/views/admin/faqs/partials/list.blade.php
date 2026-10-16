@@ -38,7 +38,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-5 py-12 text-center text-slate-400">No questions yet. <a href="{{ route('admin.faqs.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first.</a></td></tr>
+                    <x-admin.empty-row :colspan="5" noun="questions" route="admin.faqs.create" singular="question" />
                 @endforelse
             </tbody>
         </table>

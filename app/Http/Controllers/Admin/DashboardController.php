@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
 use App\Models\Meeting;
-use App\Models\NewsletterSubscriber;
 use App\Models\Payment;
 use App\Models\Project;
 use App\Models\Task;
@@ -25,7 +24,6 @@ class DashboardController extends Controller
             'projects' => Project::count(),
             'tasks' => Task::count(),
             'tasksPending' => Task::where('status', 'pending')->count(),
-            'subscribers' => NewsletterSubscriber::count(),
             'totalVisits' => Visit::count(),
             'todayVisits' => Visit::where('visit_date', today())->count(),
             'uniqueVisitors' => Visit::distinct('ip_hash')->count('ip_hash'),

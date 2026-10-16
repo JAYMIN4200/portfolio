@@ -93,42 +93,26 @@
                             Your details
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-slate-300 mb-2">Name <span class="text-red-400">*</span></label>
+                            <x-form.field name="name" label="Name" for="name" required>
                                 <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('name') border-red-400/60 @enderror"
+                                       class="form-input"
                                        placeholder="Your name">
-                                @error('name')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email <span class="text-red-400">*</span></label>
+                            </x-form.field>
+                            <x-form.field name="email" label="Email" for="email" required>
                                 <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('email') border-red-400/60 @enderror"
+                                       class="form-input"
                                        placeholder="you@example.com">
-                                @error('email')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="phone" class="block text-sm font-medium text-slate-300 mb-2">Phone</label>
+                            </x-form.field>
+                            <x-form.field name="phone" label="Phone" for="phone">
                                 <input type="text" id="phone" name="phone" value="{{ old('phone') }}" inputmode="tel"
-                                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('phone') border-red-400/60 @enderror"
+                                       class="form-input"
                                        placeholder="Phone number">
-                                @error('phone')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="company" class="block text-sm font-medium text-slate-300 mb-2">Company</label>
+                            </x-form.field>
+                            <x-form.field name="company" label="Company" for="company">
                                 <input type="text" id="company" name="company" value="{{ old('company') }}"
-                                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('company') border-red-400/60 @enderror"
+                                       class="form-input"
                                        placeholder="Optional">
-                                @error('company')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            </x-form.field>
                         </div>
                     </div>
 
@@ -138,25 +122,23 @@
                             Schedule
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label for="meeting_date" class="block text-sm font-medium text-slate-300 mb-2">Preferred Date <span class="text-red-400">*</span></label>
+                            <x-form.field name="meeting_date" label="Preferred Date" for="meeting_date" required>
                                 <input type="date" id="meeting_date" name="meeting_date" value="{{ old('meeting_date') }}" required min="{{ date('Y-m-d') }}"
-                                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('meeting_date') border-red-400/60 @enderror">
-                                @error('meeting_date')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                                       class="form-input">
+                            </x-form.field>
                             <div>
                                 <div class="flex items-center justify-between mb-2">
                                     <label for="meeting_time" class="block text-sm font-medium text-slate-300">Preferred Time <span class="text-red-400">*</span></label>
                                     <label for="duration" class="block text-sm font-medium text-slate-300 ml-3">Duration</label>
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <input type="time" id="meeting_time" name="meeting_time" value="{{ old('meeting_time') }}" required
-                                           class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('meeting_time') border-red-400/60 @enderror">
-                                    <div class="relative">
+                                    <x-form.field name="meeting_time">
+                                        <input type="time" id="meeting_time" name="meeting_time" value="{{ old('meeting_time') }}" required
+                                               class="form-input">
+                                    </x-form.field>
+                                    <x-form.field name="duration">
                                         <select id="duration" name="duration"
-                                                class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('duration') border-red-400/60 @enderror">
+                                                class="form-select">
                                             <option value="" disabled @selected(!old('duration'))>Minutes</option>
                                             <option value="15" @selected(old('duration') == 15)>15 min</option>
                                             <option value="30" @selected(old('duration') == 30)>30 min</option>
@@ -164,14 +146,8 @@
                                             <option value="60" @selected(old('duration') == 60)>60 min</option>
                                             <option value="90" @selected(old('duration') == 90)>90 min</option>
                                         </select>
-                                    </div>
+                                    </x-form.field>
                                 </div>
-                                @error('meeting_time')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                                @error('duration')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
                     </div>
@@ -182,40 +158,28 @@
                             What's on your mind?
                         </p>
                         <div class="space-y-5">
-                            <div>
-                                <label for="topic" class="block text-sm font-medium text-slate-300 mb-2">Topic</label>
-                                <div class="relative">
-                                    <select id="topic" name="topic"
-                                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('topic') border-red-400/60 @enderror">
-                                        <option value="" disabled selected @selected(!$selectedTopic)>Select a topic…</option>
-                                        @foreach ($meeting::TOPICS as $topic)
-                                            <option value="{{ $topic }}" @selected($selectedTopic === $topic)>{{ $topic }}</option>
-                                        @endforeach
-                                        <option value="{{ $meeting::TOPIC_OTHER }}" @selected($selectedTopic === $meeting::TOPIC_OTHER)>Other…</option>
-                                    </select>
-                                </div>
-                                @error('topic')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            <x-form.field name="topic" label="Topic" for="topic">
+                                <select id="topic" name="topic"
+                                        class="form-select">
+                                    <option value="" disabled selected @selected(!$selectedTopic)>Select a topic…</option>
+                                    @foreach ($meeting::TOPICS as $topic)
+                                        <option value="{{ $topic }}" @selected($selectedTopic === $topic)>{{ $topic }}</option>
+                                    @endforeach
+                                    <option value="{{ $meeting::TOPIC_OTHER }}" @selected($selectedTopic === $meeting::TOPIC_OTHER)>Other…</option>
+                                </select>
+                            </x-form.field>
                             <div id="topic-other-wrap" class="{{ $selectedTopic === $meeting::TOPIC_OTHER ? '' : 'hidden' }}">
-                                <label for="topic_other" class="block text-sm font-medium text-slate-300 mb-2">Tell us your topic <span class="text-red-400">*</span></label>
-                                <input type="text" id="topic_other" name="topic_other" value="{{ old('topic_other') }}"
-                                       class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('topic_other') border-red-400/60 @enderror"
-                                       placeholder="Write your topic here…">
-                                @error('topic_other')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
+                                <x-form.field name="topic_other" label="Tell us your topic" for="topic_other" required>
+                                    <input type="text" id="topic_other" name="topic_other" value="{{ old('topic_other') }}"
+                                           class="form-input"
+                                           placeholder="Write your topic here…">
+                                </x-form.field>
                             </div>
-                            <div>
-                                <label for="notes" class="block text-sm font-medium text-slate-300 mb-2">Notes</label>
+                            <x-form.field name="notes" label="Notes" for="notes">
                                 <textarea id="notes" name="notes" rows="4"
-                                          class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none @error('notes') border-red-400/60 @enderror"
+                                          class="form-textarea resize-none"
                                           placeholder="Anything you'd like me to know in advance...">{{ old('notes') }}</textarea>
-                                @error('notes')
-                                    <p class="contact-field-error mt-2 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            </x-form.field>
                         </div>
                     </div>
 

@@ -11,28 +11,17 @@
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Question <span class="text-red-500">*</span></label>
-                    <input type="text" name="question" value="{{ old('question', $faq->question) }}" required placeholder="e.g. What technologies do you work with?" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('question') border-red-300 @enderror">
-                    @error('question') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="question" label="Question" required placeholder="e.g. What technologies do you work with?" :value="$faq->question" />
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Answer <span class="text-red-500">*</span></label>
+                <x-form.field name="answer" label="Answer" for="faq-answer-source" required>
                     <x-admin.rich-editor name="answer" value="{{ old('answer', $faq->answer) }}" id="faq-answer" :rows="6" />
-                    @error('answer') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                </x-form.field>
 
                 <div class="grid grid-cols-2 gap-5 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>
-                        <input type="number" name="sort_order" value="{{ old('sort_order', $faq->sort_order) }}" min="0" placeholder="0" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    </div>
+                    <x-form.input type="number" name="sort_order" label="Sort Order" :value="$faq->sort_order" min="0" placeholder="0" />
+
                     <div class="flex items-end pb-2.5">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', $faq->is_visible) ? 'checked' : '' }}>
-                            <span class="text-sm text-slate-700 font-medium">Visible on the website</span>
-                        </label>
+                        <x-form.checkbox name="is_visible" label="Visible on the website" :checked="old('is_visible', $faq->is_visible)" />
                     </div>
                 </div>
             </div>

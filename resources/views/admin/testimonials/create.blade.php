@@ -12,55 +12,29 @@
 
         <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Client Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="client_name" value="{{ old('client_name') }}" required placeholder="e.g. Rohan Mehta" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all @error('client_name') border-red-300 @enderror">
-                    @error('client_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.input name="client_name" label="Client Name" required placeholder="e.g. Rohan Mehta" />
 
                 <div class="grid grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Company</label>
-                        <input type="text" name="company" value="{{ old('company') }}" placeholder="e.g. Techmayntra IT Solutions" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Role</label>
-                        <input type="text" name="role" value="{{ old('role') }}" placeholder="e.g. Project Manager" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    </div>
+                    <x-form.input name="company" label="Company" placeholder="e.g. Techmayntra IT Solutions" />
+                    <x-form.input name="role" label="Role" placeholder="e.g. Project Manager" />
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Testimonial <span class="text-red-500">*</span></label>
-                    <textarea name="content" rows="5" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all resize-none @error('content') border-red-300 @enderror" placeholder="What did they say about you?">{{ old('content') }}</textarea>
-                    @error('content') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
+                <x-form.textarea name="content" label="Testimonial" required :rows="5" placeholder="What did they say about you?" />
 
                 <div class="grid grid-cols-3 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Avatar</label>
-                        <input type="file" name="avatar" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Rating</label>
-                        <div class="relative">
-                            <select name="rating" class="w-full px-3 py-2.5 pr-10 rounded-lg border border-slate-300 text-slate-800 appearance-none bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                                @for ($i = 5; $i >= 1; $i--)
-                                    <option value="{{ $i }}" {{ old('rating', 5) == $i ? 'selected' : '' }}>{{ $i }} star{{ $i > 1 ? 's' : '' }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>
-                        <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" min="0" placeholder="0" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    </div>
+                    <x-form.file name="avatar" label="Avatar" accept="image/*" />
+
+                    <x-form.select name="rating" label="Rating" :value="5">
+                        @for ($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}" @selected(old('rating', 5) == $i)>{{ $i }} star{{ $i > 1 ? 's' : '' }}</option>
+                        @endfor
+                    </x-form.select>
+
+                    <x-form.input type="number" name="sort_order" label="Sort Order" :value="0" min="0" placeholder="0" />
                 </div>
 
                 <div class="flex items-center">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_visible" value="1" {{ old('is_visible', true) ? 'checked' : '' }}>
-                        <span class="text-sm text-slate-700 font-medium">Visible on the website</span>
-                    </label>
+                    <x-form.checkbox name="is_visible" label="Visible on the website" :checked="old('is_visible', true)" />
                 </div>
             </div>
         </div>

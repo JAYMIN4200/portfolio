@@ -6,7 +6,7 @@
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800">Expenses</h1>
+            <h1 class="text-2xl font-bold text-slate-800">Expenses ({{ $expenses->total() }})</h1>
             <p class="text-slate-500 mt-1">Track your business expenses.</p>
         </div>
         <a href="{{ route('admin.expenses.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors">
@@ -18,13 +18,12 @@
     <div class="bg-white rounded-xl border border-slate-200">
         <div class="p-5 border-b border-slate-200">
             <form method="GET" data-ajax-form class="flex gap-2 flex-wrap">
-                <input type="text" name="search" value="{{ request('search') }}" data-ajax-search placeholder="Search title..." class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                <select name="category" data-ajax-filter class="px-3 py-2 rounded-lg border border-slate-300 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all">
-                    <option value="">All categories</option>
+                <x-form.input name="search" size="sm" bare :value="request('search')" data-ajax-search placeholder="Search title..." class="flex-1 min-w-[200px]" />
+                <x-form.select name="category" size="sm" bare :value="request('category')" placeholder="All categories" data-ajax-filter>
                     @foreach ($categories as $category)
-                        <option value="{{ $category }}" {{ request('category') === $category ? 'selected' : '' }}>{{ $category }}</option>
+                        <option value="{{ $category }}" @selected((string) request('category') === (string) $category)>{{ $category }}</option>
                     @endforeach
-                </select>
+                </x-form.select>
                 <button type="submit" class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Search</button>
                 @if (request('search') || request('category'))
                     <a href="{{ route('admin.expenses.index') }}" data-ajax-clear class="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700">Clear</a>

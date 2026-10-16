@@ -48,7 +48,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="px-5 py-12 text-center text-slate-400">No payments yet. <a href="{{ route('admin.payments.create') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Add your first.</a></td></tr>
+                    <x-admin.empty-row :colspan="6" noun="payments" route="admin.payments.create" singular="payment" />
                 @endforelse
             </tbody>
         </table>
