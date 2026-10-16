@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use App\Support\ViteDevServer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        ViteDevServer::useBuiltAssetsWhenDevServerIsDown();
+
         View::composer(['layouts.mail', 'emails.*'], function ($view) {
             $view->with('siteName', Setting::get('site_title') ?: config('app.name'));
             $view->with('siteUrl', config('app.url'));

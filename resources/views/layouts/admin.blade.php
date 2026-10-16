@@ -131,7 +131,11 @@
                 <x-admin.nav :groups="$navGroups" />
             </nav>
 
-            <div class="border-t border-slate-800 p-3">
+            <div class="border-t border-slate-800 p-3 space-y-1">
+                <a href="{{ route('home') }}" target="_blank" class="aside-link w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="admin-link-label">View Website</span>
+                </a>
                 <form method="POST" action="{{ route('logout') }}" data-confirm="Are you sure you want to logout?" data-confirm-button="Yes, Logout">
                     @csrf
                     <button type="submit" class="aside-link w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">
@@ -186,7 +190,7 @@
 
                     <div data-user-menu-dropdown class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl border border-slate-200 shadow-lg py-1.5">
                         <p class="px-4 py-2 text-sm text-slate-600 sm:hidden">{{ auth()->user()->name }} · {{ auth()->user()->email }}</p>
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" data-confirm="Are you sure you want to logout?" data-confirm-button="Yes, Logout">
                             @csrf
                             <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
@@ -225,7 +229,11 @@
                     <nav class="py-4 px-3 space-y-1 flex-1">
                         <x-admin.nav :groups="$navGroups" mobile />
                     </nav>
-                    <div class="border-t border-slate-800 p-3">
+                    <div class="border-t border-slate-800 p-3 space-y-1">
+                        <a href="{{ route('home') }}" target="_blank" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            View Website
+                        </a>
                         <form method="POST" action="{{ route('logout') }}" data-confirm="Are you sure you want to logout?" data-confirm-button="Yes, Logout">
                             @csrf
                             <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">
@@ -509,14 +517,10 @@ content.classList.remove('opacity-50', 'pointer-events-none');
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;');
 
-                const buildSearchIndex = () => {
+                    const buildSearchIndex = () => {
                     const items = [];
-                    document.querySelectorAll('.admin-sidebar nav a.aside-link[href]').forEach(a => {
-                        const labelEl = a.querySelector('.admin-link-label');
-                        const label = (labelEl ? labelEl.textContent : a.textContent || '').replace(/\s+/g, ' ').trim();
-                        if (!label) return;
-                        items.push({ label, group: (a.dataset.sidebarGroupLabel || '').trim(), url: a.getAttribute('href') || '#' });
-                    });
+                    // Individual module items first (specific names like "Skills"),
+                    // so they become the primary label instead of the group header ("Content").
                     document.querySelectorAll('#sidebarModuleExtra a[href]').forEach(a => {
                         const label = (a.textContent || '').replace(/\s+/g, ' ').trim();
                         if (!label) return;
@@ -528,6 +532,13 @@ content.classList.remove('opacity-50', 'pointer-events-none');
                         if (!label) return;
                         const titleEl = a.closest('.section-switch')?.querySelector('.section-switch-title');
                         items.push({ label, group: titleEl ? titleEl.textContent.trim() : '', url: a.getAttribute('href') || '#' });
+                    });
+                    // Group headers last (e.g. "Content") — only used as fallback.
+                    document.querySelectorAll('.admin-sidebar nav a.aside-link[href]').forEach(a => {
+                        const labelEl = a.querySelector('.admin-link-label');
+                        const label = (labelEl ? labelEl.textContent : a.textContent || '').replace(/\s+/g, ' ').trim();
+                        if (!label) return;
+                        items.push({ label, group: (a.dataset.sidebarGroupLabel || '').trim(), url: a.getAttribute('href') || '#' });
                     });
 
                     const byUrl = {};

@@ -150,6 +150,18 @@ body {
     display: none;
 }
 
+/* Hide root scrollbar on frontend and admin; content scrolls inside containers */
+html,
+body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
 .admin-collapse-btn svg { transition: transform 0.2s ease; }
 
 body.sidebar-collapsed .admin-sidebar { width: 5rem; }
