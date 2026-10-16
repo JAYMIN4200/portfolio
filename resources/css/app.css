@@ -627,44 +627,46 @@ html[data-theme='light'] input[type='radio']:hover {
  */
 [data-auth] input[type='checkbox'],
 [data-auth] input[type='radio'] {
-    appearance: none;
-    -webkit-appearance: none;
-    flex: none;
-    background-color: var(--color-slate-900);
-    border: 1px solid var(--color-slate-600);
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    flex: none !important;
+    background-color: var(--color-slate-900) !important;
+    border: 1px solid var(--color-slate-600) !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important;
 }
 
 [data-auth] input[type='checkbox']:checked,
 [data-auth] input[type='radio']:checked {
-    background-color: var(--color-indigo-600);
-    border-color: var(--color-indigo-600);
+    background-color: var(--color-indigo-600) !important;
+    border-color: var(--color-indigo-600) !important;
 }
 
 [data-auth] input[type='checkbox']:checked::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 78%;
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 78% !important;
 }
 
 [data-auth] input[type='radio'] {
-    border-radius: 9999px;
+    border-radius: 9999px !important;
 }
 
 [data-auth] input[type='radio']:checked {
-    background-image: radial-gradient(circle, #ffffff 0%, #ffffff 42%, transparent 45%);
+    background-image: radial-gradient(circle, #ffffff 0%, #ffffff 42%, transparent 45%) !important;
 }
 
 [data-auth] input[type='checkbox']:focus-visible,
 [data-auth] input[type='radio']:focus-visible {
-    outline: 2px solid var(--color-indigo-500);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-indigo-500) !important;
+    outline-offset: 2px !important;
 }
 
 /*
@@ -673,47 +675,47 @@ html[data-theme='light'] input[type='radio']:hover {
  */
 html[data-admin] input[type='checkbox'],
 html[data-admin] input[type='radio'] {
-    appearance: none;
-    -webkit-appearance: none;
-    flex: none;
-    width: 1.125rem;
-    height: 1.125rem;
-    background-color: #ffffff;
-    border: 1px solid var(--color-slate-300);
-    border-radius: 0.3rem;
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    flex: none !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+    background-color: #ffffff !important;
+    border: 1px solid var(--color-slate-300) !important;
+    border-radius: 0.3rem !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease !important;
 }
 
 html[data-admin] input[type='checkbox']:checked,
 html[data-admin] input[type='radio']:checked {
-    background-color: var(--color-indigo-600);
-    border-color: var(--color-indigo-600);
+    background-color: var(--color-indigo-600) !important;
+    border-color: var(--color-indigo-600) !important;
 }
 
 html[data-admin] input[type='checkbox']:checked::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 78%;
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 78% !important;
 }
 
 html[data-admin] input[type='radio'] {
-    border-radius: 9999px;
+    border-radius: 9999px !important;
 }
 
 html[data-admin] input[type='radio']:checked {
-    background-image: radial-gradient(circle, #ffffff 0%, #ffffff 42%, transparent 45%);
+    background-image: radial-gradient(circle, #ffffff 0%, #ffffff 42%, transparent 45%) !important;
 }
 
 html[data-admin] input[type='checkbox']:focus-visible,
 html[data-admin] input[type='radio']:focus-visible {
-    outline: 2px solid var(--color-indigo-500);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-indigo-500) !important;
+    outline-offset: 2px !important;
 }
 
 /* Status tabs in My Tasks - active state is toggled client-side after AJAX filtering. */
