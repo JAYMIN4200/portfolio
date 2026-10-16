@@ -270,7 +270,7 @@
     <x-bootstrap.toasts />
 
     <div data-confirm-modal class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60" data-confirm-modal-close></div>
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-xs" data-confirm-modal-close></div>
         <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden animate-zoom-in">
             <div class="flex flex-col items-center px-8 pt-9 pb-6 text-center">
                 <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-5">
